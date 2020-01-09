@@ -1,4 +1,4 @@
-package com.github.kirilldev.mongomery;
+package com.github.borsch.mongomery;
 
 import java.util.HashSet;
 import java.util.Set;

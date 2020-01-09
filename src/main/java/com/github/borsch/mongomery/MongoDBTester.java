@@ -1,19 +1,26 @@
-package com.github.kirilldev.mongomery;
+package com.github.borsch.mongomery;
+
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
+
+import org.junit.Assert;
 
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 import com.mongodb.util.JSON;
+
 import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONValue;
-import org.junit.Assert;
-
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
-import java.util.*;
 
 /**
  * Core instance of a library.
@@ -71,11 +78,7 @@ public class MongoDBTester {
      * @param fileStream stream with json data which describes how to populate DB.
      */
     public void setDBState(InputStream fileStream) {
-        try {
-            populateDB(JSONValue.parse(new InputStreamReader(fileStream, "UTF-8"), JSONObject.class));
-        } catch (UnsupportedEncodingException e) {
-            throw new RuntimeException(e);
-        }
+        populateDB(JSONValue.parse(new InputStreamReader(fileStream, StandardCharsets.UTF_8), JSONObject.class));
     }
 
     /**

@@ -1,12 +1,12 @@
-package com.github.kirilldev.mongomery;
-
-import net.minidev.json.JSONObject;
-import net.minidev.json.JSONValue;
+package com.github.borsch.mongomery;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
+
+import net.minidev.json.JSONObject;
+import net.minidev.json.JSONValue;
 
 public class Utils {
     private Utils() {
@@ -18,16 +18,12 @@ public class Utils {
     }
 
     public static JSONObject readJsonFile(String filePath) {
-        final InputStream fileStream = Utils.class.getClass().getResourceAsStream(filePath);
+        final InputStream fileStream = Utils.class.getResourceAsStream(filePath);
 
         if (fileStream == null) {
             throw new RuntimeException(new FileNotFoundException(filePath));
         }
 
-        try {
-            return JSONValue.parse(new InputStreamReader(fileStream, "UTF-8"), JSONObject.class);
-        } catch (UnsupportedEncodingException e) {
-            throw new RuntimeException(e);
-        }
+        return JSONValue.parse(new InputStreamReader(fileStream, StandardCharsets.UTF_8), JSONObject.class);
     }
 }

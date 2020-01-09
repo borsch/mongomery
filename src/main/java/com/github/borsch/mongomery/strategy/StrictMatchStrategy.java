@@ -1,4 +1,4 @@
-package com.github.kirilldev.mongomery.strategy;
+package com.github.borsch.mongomery.strategy;
 
 import net.minidev.json.JSONObject;
 import org.junit.Assert;

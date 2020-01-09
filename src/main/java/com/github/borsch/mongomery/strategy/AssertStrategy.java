@@ -1,8 +1,8 @@
-package com.github.kirilldev.mongomery.strategy;
-
-import net.minidev.json.JSONObject;
+package com.github.borsch.mongomery.strategy;
 
 import java.util.Set;
+
+import net.minidev.json.JSONObject;
 
 public abstract class AssertStrategy {
 

@@ -1,17 +1,13 @@
 # mongomery
-Simple and useful util for unit and integration testing with mongodb (java 1.5+)
-
-[![Build Status](https://travis-ci.org/kirilldev/mongomery.svg?branch=master)](https://travis-ci.org/kirilldev/mongomery)
-
-[![Coverage Status](https://coveralls.io/repos/kirilldev/mongomery/badge.svg?branch=master&service=github)](https://coveralls.io/github/kirilldev/mongomery?branch=master)
+Simple and useful util for unit and integration testing with mongodb (java 1.8+)
 
 This library allows you easily populate db with predefined data
 from a json file and also do assertions about db state using a json file.
 
     <dependency>
-      <groupId>com.github.kirilldev</groupId>
+      <groupId>com.github.borsch</groupId>
       <artifactId>mongomery</artifactId>
-      <version>1.0.0</version>
+      <version>0.1.0-SNAPSHOT</version>
     </dependency>
 
 Assume you have "predefinedTestData.json" file in you resources folder that looks like this:

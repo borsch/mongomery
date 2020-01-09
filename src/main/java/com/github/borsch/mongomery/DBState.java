@@ -1,7 +1,8 @@
-package com.github.kirilldev.mongomery;
+package com.github.borsch.mongomery;
 
 
-import com.github.kirilldev.mongomery.strategy.AssertStrategy;
+import com.github.borsch.mongomery.strategy.AssertStrategy;
+
 import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
 

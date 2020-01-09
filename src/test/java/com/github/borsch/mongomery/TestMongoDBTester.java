@@ -1,13 +1,13 @@
-package com.github.kirilldev.mongomery;
+package com.github.borsch.mongomery;
 
-import com.github.fakemongo.Fongo;
+import java.io.InputStream;
 
-import com.mongodb.DB;
-import net.minidev.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.io.InputStream;
+import com.github.fakemongo.Fongo;
+import com.mongodb.DB;
+import net.minidev.json.JSONObject;
 
 public class TestMongoDBTester {
 

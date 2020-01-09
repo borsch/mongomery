@@ -1,4 +1,4 @@
-package com.github.kirilldev.mongomery;
+package com.github.borsch.mongomery;
 
 import net.minidev.json.JSONObject;
 
@@ -6,7 +6,7 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static com.github.kirilldev.mongomery.Placeholders.*;
+import static com.github.borsch.mongomery.Placeholders.*;
 
 public class PatternMatchUtils {
     private PatternMatchUtils() {
