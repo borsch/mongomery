@@ -1,17 +1,20 @@
 package com.github.borsch.mongomery.strategy;
 
-import net.minidev.json.JSONObject;
+import java.util.Set;
+
 import org.junit.Assert;
 
-import java.util.Set;
+import net.minidev.json.JSONObject;
 
 /**
  * Asserts collection state if every document of it DOES NOT contain any of placeholders:
  * $anyObject(), $anyString()
  */
-public class StrictMatchStrategy extends AssertStrategy {
+public class StrictMatchStrategy implements AssertStrategy {
+
     @Override
-    public void assertTheSame(Set<JSONObject> expected, Set<JSONObject> actual) {
+    public void assertTheSame(final Set<JSONObject> expected, final Set<JSONObject> actual) {
         Assert.assertEquals("Documents in db collection are different from described in json file!", expected, actual);
     }
+
 }

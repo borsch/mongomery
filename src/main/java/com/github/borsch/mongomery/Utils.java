@@ -12,12 +12,12 @@ public class Utils {
     private Utils() {
     }
 
-    public static String[] splitByLast$(String s) {
+    public static String[] splitByLast$(final String s) {
         final int $ = s.lastIndexOf("$");
-        return new String[]{s.substring(0, $), s.substring($)};
+        return new String[] { s.substring(0, $), s.substring($) };
     }
 
-    public static JSONObject readJsonFile(String filePath) {
+    public static JSONObject readJsonFile(final String filePath) {
         final InputStream fileStream = Utils.class.getResourceAsStream(filePath);
 
         if (fileStream == null) {

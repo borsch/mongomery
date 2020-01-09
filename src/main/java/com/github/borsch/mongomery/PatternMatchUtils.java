@@ -1,21 +1,28 @@
 package com.github.borsch.mongomery;
 
-import net.minidev.json.JSONObject;
+import static com.github.borsch.mongomery.Placeholders.ANY_OBJECT;
+import static com.github.borsch.mongomery.Placeholders.ANY_OBJECT_WITH_ARG;
+import static com.github.borsch.mongomery.Placeholders.ANY_STRING;
+import static com.github.borsch.mongomery.Placeholders.ANY_STRING_WITH_ARG;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.Map;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static com.github.borsch.mongomery.Placeholders.*;
+import net.minidev.json.JSONObject;
 
 public class PatternMatchUtils {
     private PatternMatchUtils() {
     }
 
-    public static JSONObject applyPropsAndGetResultObj(JSONObject object, Set<String> props) {
+    public static JSONObject applyPropsAndGetResultObj(final JSONObject object, final Set<String> props) {
         JSONObject clone = (JSONObject) object.clone();
 
-        for (String prop : props) {
+        for (final String prop : props) {
             final String[] properties = prop.split("\\.");
             LinkedList<JSONObject> trace = new LinkedList<JSONObject>();
             trace.add(clone);
@@ -31,7 +38,7 @@ public class PatternMatchUtils {
                             (ANY_OBJECT.eq($s[1]) && o instanceof JSONObject)) {
                         clone = createMergedObj(trace, properties, clone.getAsString($s[0]));
                     } else if (ANY_OBJECT_WITH_ARG.eq($s[1]) && o instanceof JSONObject) {
-                        int numOfObjs = Integer.valueOf($s[1].substring(11, $s[1].lastIndexOf(')')));
+                        int numOfObjs = Integer.parseInt($s[1].substring(11, $s[1].lastIndexOf(')')));
                         if (((JSONObject) o).size() == numOfObjs) {
                             clone = createMergedObj(trace, properties, clone.getAsString($s[0]));
                         }
@@ -54,7 +61,7 @@ public class PatternMatchUtils {
         return clone;
     }
 
-    private static JSONObject createMergedObj(LinkedList<JSONObject> trace, String[] properties, Object old) {
+    private static JSONObject createMergedObj(final LinkedList<JSONObject> trace, final String[] properties, final Object old) {
         final String[] $s = Utils.splitByLast$(properties[properties.length - 1]);
         final JSONObject object = trace.removeLast();
         object.put($s[0], $s[1]);
@@ -69,16 +76,16 @@ public class PatternMatchUtils {
         return temp;
     }
 
-    public static Set<String> findPatternPropertiesPaths(JSONObject object) {
+    public static Set<String> findPatternPropertiesPaths(final JSONObject object) {
         int contains = countStringContainsPattern(object.toString());
 
         if (contains == 0) {
             return null;
         } else {
-            final Set<String> properties = new HashSet<String>();
+            final Set<String> properties = new HashSet<>();
 
-            for (Map.Entry<String, Object> node : object.entrySet()) {
-                final Set<String> props = checkForNode(node, new HashSet<String>());
+            for (final Map.Entry<String, Object> node : object.entrySet()) {
+                final Set<String> props = checkForNode(node, new HashSet<>());
                 if (!props.isEmpty()) {
                     properties.addAll(props);
                     if (contains == properties.size()) {
@@ -91,7 +98,7 @@ public class PatternMatchUtils {
         }
     }
 
-    private static Set<String> checkForNode(Map.Entry<String, Object> node, Set<String> props) {
+    private static Set<String> checkForNode(final Map.Entry<String, Object> node, final Set<String> props) {
         final Object value = node.getValue();
 
         if (value == null || countStringContainsPattern(value.toString()) == 0) {
@@ -101,8 +108,8 @@ public class PatternMatchUtils {
 
             if (value instanceof String) {
                 if (checkForEqualsPattern((String) value)) {
-                    final Set<String> hashSet = new HashSet<String>();
-                    for (String p : newProps) {
+                    final Set<String> hashSet = new HashSet<>();
+                    for (final String p : newProps) {
                         hashSet.add(p + value);
                     }
                     return hashSet;
@@ -116,9 +123,9 @@ public class PatternMatchUtils {
                 throw new UnsupportedOperationException("You can't use match patterns in arrays for now!");
             } else {
                 final JSONObject childNodes = (JSONObject) value;
-                final Set<String> theNewestProps = new HashSet<String>();
+                final Set<String> theNewestProps = new HashSet<>();
 
-                for (Map.Entry<String, Object> childNode : childNodes.entrySet()) {
+                for (final Map.Entry<String, Object> childNode : childNodes.entrySet()) {
                     final Set<String> p = checkForNode(childNode, newProps);
 
                     if (!newProps.equals(p)) {
@@ -134,13 +141,13 @@ public class PatternMatchUtils {
     }
 
 
-    private static Set<String> addNodeForProps(Set<String> props, String nodeKey) {
-        final Set<String> newProps = new HashSet<String>();
+    private static Set<String> addNodeForProps(final Set<String> props, final String nodeKey) {
+        final Set<String> newProps = new HashSet<>();
 
         if (props.isEmpty()) {
             newProps.add(nodeKey);
         } else {
-            for (String p : props) {
+            for (final String p : props) {
                 newProps.add(p + "." + nodeKey);
             }
         }
@@ -148,23 +155,16 @@ public class PatternMatchUtils {
         return newProps;
     }
 
-    public static boolean checkForEqualsPattern(String value) {
-        final Set<Pattern> patterns = Placeholders.getEqualPatterns();
-
-        for (Pattern pattern : patterns) {
-            if (pattern.matcher(value).find()) {
-                return true;
-            }
-        }
-
-        return false;
+    public static boolean checkForEqualsPattern(final String value) {
+        return Placeholders.getEqualPatterns().stream()
+            .anyMatch(pattern -> pattern.matcher(value).find());
     }
 
-    public static int countStringContainsPattern(String string) {
+    public static int countStringContainsPattern(final String string) {
         int count = 0;
 
-        for (Pattern pattern : Placeholders.getContainPatterns()) {
-            Matcher matcher = pattern.matcher(string);
+        for (final Pattern pattern : Placeholders.getContainPatterns()) {
+            final Matcher matcher = pattern.matcher(string);
 
             while (matcher.find()) {
                 count++;

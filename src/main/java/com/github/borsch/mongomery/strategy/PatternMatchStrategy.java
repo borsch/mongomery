@@ -1,23 +1,28 @@
 package com.github.borsch.mongomery.strategy;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+
+import org.junit.Assert;
+
 import com.github.borsch.mongomery.PatternMatchUtils;
 
 import net.minidev.json.JSONObject;
-import org.junit.Assert;
 
-import java.util.*;
-
-public class PatternMatchStrategy extends AssertStrategy {
+public class PatternMatchStrategy implements AssertStrategy {
 
     @Override
-    public void assertTheSame(Set<JSONObject> expectedObjects, Set<JSONObject> actualObjects) {
+    public void assertTheSame(final Set<JSONObject> expectedObjects, final Set<JSONObject> actualObjects) {
         Assert.assertEquals("Size of collection in db is different from described in json file",
                 expectedObjects.size(), actualObjects.size());
 
-        final Map<JSONObject, Set<String>> patternMatchExpectedObjects = new HashMap<JSONObject, Set<String>>();
-        final Set<JSONObject> strictMatchExpectedObjects = new HashSet<JSONObject>();
+        final Map<JSONObject, Set<String>> patternMatchExpectedObjects = new HashMap<>();
+        final Set<JSONObject> strictMatchExpectedObjects = new HashSet<>();
 
-        for (JSONObject object : expectedObjects) {
+        for (final JSONObject object : expectedObjects) {
             final Set<String> patternPropertiesPaths = PatternMatchUtils.findPatternPropertiesPaths(object);
 
             if (patternPropertiesPaths == null) {
@@ -32,9 +37,9 @@ public class PatternMatchStrategy extends AssertStrategy {
         tryToMatchOverPattern(patternMatchExpectedObjects, patternMatchCandidates);
     }
 
-    private Set<JSONObject> tryToMatchStrictly(Set<JSONObject> strictMatchExpectedObjects,
-                                               int patternMatchExpectedObjectsSize, Set<JSONObject> actualObjects) {
-        final Set<JSONObject> actualObjectsCopy = new HashSet<JSONObject>(actualObjects);
+    private Set<JSONObject> tryToMatchStrictly(final Set<JSONObject> strictMatchExpectedObjects,
+                                               final int patternMatchExpectedObjectsSize, final Set<JSONObject> actualObjects) {
+        final Set<JSONObject> actualObjectsCopy = new HashSet<>(actualObjects);
         actualObjectsCopy.removeAll(strictMatchExpectedObjects);
 
         if (actualObjectsCopy.size() != patternMatchExpectedObjectsSize) {
@@ -48,11 +53,10 @@ public class PatternMatchStrategy extends AssertStrategy {
 
     private void tryToMatchOverPattern(final Map<JSONObject, Set<String>> expectedObjects,
                                        final Set<JSONObject> actualObjects) {
-        final Map<JSONObject, Set<String>> patternMatchExpectedObjects
-                = new HashMap<JSONObject, Set<String>>(expectedObjects);
-        final Set<JSONObject> unmatchedActualObjects = new HashSet<JSONObject>();
+        final Map<JSONObject, Set<String>> patternMatchExpectedObjects = new HashMap<>(expectedObjects);
+        final Set<JSONObject> unmatchedActualObjects = new HashSet<>();
 
-        for (JSONObject actualObject : actualObjects) {
+        for (final JSONObject actualObject : actualObjects) {
             boolean isMatched = false;
             final Iterator<Map.Entry<JSONObject, Set<String>>> iterator
                     = patternMatchExpectedObjects.entrySet().iterator();

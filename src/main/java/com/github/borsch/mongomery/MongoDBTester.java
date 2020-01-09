@@ -41,7 +41,7 @@ public class MongoDBTester {
     /**
      * @param db mongodb instance.
      */
-    public MongoDBTester(DB db) {
+    public MongoDBTester(final DB db) {
         this.expectedFilesRoot = "/";
         this.predefinedFilesRoot = "/";
         this.db = db;
@@ -52,7 +52,7 @@ public class MongoDBTester {
      * @param expectedFilesRoot   expected files root. File path passed to setDBState() will be relative to this root.
      * @param predefinedFilesRoot predefined files root.
      */
-    public MongoDBTester(DB db, String expectedFilesRoot, String predefinedFilesRoot) {
+    public MongoDBTester(final DB db, final String expectedFilesRoot, final String predefinedFilesRoot) {
         this.expectedFilesRoot = expectedFilesRoot;
         this.predefinedFilesRoot = predefinedFilesRoot;
         this.db = db;
@@ -68,7 +68,7 @@ public class MongoDBTester {
     /**
      * @param filePath file path with json data which describes expected DB state.
      */
-    public void assertDBStateEquals(String filePath) {
+    public void assertDBStateEquals(final String filePath) {
         final DBState dbState = new DBState(Utils.readJsonFile(expectedFilesRoot + filePath));
         assertCollectionNamesAreEquals(dbState);
         assertDocumentsInCollectionAreEquals(dbState);
@@ -77,7 +77,7 @@ public class MongoDBTester {
     /**
      * @param fileStream stream with json data which describes how to populate DB.
      */
-    public void setDBState(InputStream fileStream) {
+    public void setDBState(final InputStream fileStream) {
         populateDB(JSONValue.parse(new InputStreamReader(fileStream, StandardCharsets.UTF_8), JSONObject.class));
     }
 
@@ -85,7 +85,7 @@ public class MongoDBTester {
      * @param filePath file path relative to predefinedFilesRoot. File should contain json data
      *                 which describes how to populate DB.
      */
-    public void setDBState(String filePath) {
+    public void setDBState(final String filePath) {
         populateDB(Utils.readJsonFile(predefinedFilesRoot + filePath));
     }
 
@@ -93,40 +93,40 @@ public class MongoDBTester {
      * @param collectionName name of mongoDB collection to create
      * @param docArgs        documents to populate collection
      */
-    public void setDBState(String collectionName, JSONObject... docArgs) {
+    public void setDBState(final String collectionName, final JSONObject... docArgs) {
         final JSONArray docs = new JSONArray();
         Collections.addAll(docs, docArgs);
         populateDBCollection(collectionName, docs);
     }
 
-    private void populateDB(JSONObject object) {
-        for (Map.Entry<String, Object> collection : object.entrySet()) {
+    private void populateDB(final JSONObject object) {
+        for (final Map.Entry<String, Object> collection : object.entrySet()) {
             populateDBCollection(collection.getKey(), (JSONArray) collection.getValue());
         }
     }
 
-    private void populateDBCollection(String collectionName, JSONArray docs) {
+    private void populateDBCollection(final String collectionName, final JSONArray docs) {
         final DBCollection dbCollection = db.getCollection(collectionName);
 
-        for (Object document : docs) {
+        for (final Object document : docs) {
             final DBObject doc = (DBObject) JSON.parse(document.toString());
             dbCollection.insert(doc);
         }
     }
 
-    private void assertDocumentsInCollectionAreEquals(DBState dbState) {
-        for (String collectionName : dbState.getCollectionNames()) {
+    private void assertDocumentsInCollectionAreEquals(final DBState dbState) {
+        for (final String collectionName : dbState.getCollectionNames()) {
             final Set<JSONObject> actualDocs = getAllDocumentsFromDb(collectionName);
             final Set<JSONObject> expectedDocs = dbState.getDocuments(collectionName);
             dbState.getMatchStrategy(collectionName).assertTheSame(expectedDocs, actualDocs);
         }
     }
 
-    private void assertCollectionNamesAreEquals(DBState dbState) {
+    private void assertCollectionNamesAreEquals(final DBState dbState) {
         final Set<String> collections = db.getCollectionNames();
-        final SortedSet<String> collectionsInDb = new TreeSet<String>();
+        final SortedSet<String> collectionsInDb = new TreeSet<>();
 
-        for (String collection : collections) {
+        for (final String collection : collections) {
             if (!SYSTEM_COLLECTIONS_NAMES.contains(collection)) {
                 collectionsInDb.add(collection);
             }
@@ -136,8 +136,8 @@ public class MongoDBTester {
                 dbState.getCollectionNames(), collectionsInDb);
     }
 
-    private Set<JSONObject> getAllDocumentsFromDb(String collectionName) {
-        final Set<JSONObject> documents = new HashSet<JSONObject>();
+    private Set<JSONObject> getAllDocumentsFromDb(final String collectionName) {
+        final Set<JSONObject> documents = new HashSet<>();
         final DBCursor cursor = db.getCollection(collectionName).find();
 
         while (cursor.hasNext()) {

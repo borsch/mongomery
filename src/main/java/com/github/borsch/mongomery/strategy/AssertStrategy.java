@@ -4,10 +4,10 @@ import java.util.Set;
 
 import net.minidev.json.JSONObject;
 
-public abstract class AssertStrategy {
+public interface AssertStrategy {
 
-    public final static PatternMatchStrategy PATTERN_MATCH_STRATEGY = new PatternMatchStrategy();
-    public final static StrictMatchStrategy STRICT_MATCH_STRATEGY = new StrictMatchStrategy();
+    PatternMatchStrategy PATTERN_MATCH_STRATEGY = new PatternMatchStrategy();
+    StrictMatchStrategy STRICT_MATCH_STRATEGY = new StrictMatchStrategy();
 
-    public abstract void assertTheSame(Set<JSONObject> expected, Set<JSONObject> actual);
+    void assertTheSame(Set<JSONObject> expected, Set<JSONObject> actual);
 }

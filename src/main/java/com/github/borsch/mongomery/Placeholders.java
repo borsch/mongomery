@@ -1,8 +1,9 @@
 package com.github.borsch.mongomery;
 
-import java.util.HashSet;
 import java.util.Set;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public enum Placeholders {
     ANY_OBJECT("\\$anyObject\\(\\)"),
@@ -10,38 +11,27 @@ public enum Placeholders {
     ANY_STRING("\\$anyString\\(\\)"),
     ANY_STRING_WITH_ARG("\\$anyString\\(\\\\?/.+\\\\?/\\)");
 
-    public Pattern containPattern;
-    public Pattern equalPattern;
+    private final Pattern containPattern;
+    private final Pattern equalPattern;
 
-    private final static Set<Pattern> containPatterns = new HashSet<Pattern>();
-    private final static Set<Pattern> equalPatterns = new HashSet<Pattern>();
-
-    Placeholders(String pattern) {
+    Placeholders(final String pattern) {
         this.containPattern = Pattern.compile(pattern);
         this.equalPattern = Pattern.compile("^" + pattern + "$");
     }
 
-    public boolean eq(String s) {
+    public boolean eq(final String s) {
         return this.equalPattern.matcher(s).matches();
     }
 
     public static Set<Pattern> getContainPatterns() {
-        if (containPatterns.isEmpty()) {
-            for (Placeholders words : Placeholders.values()) {
-                containPatterns.add(words.containPattern);
-            }
-        }
-
-        return containPatterns;
+        return Stream.of(values())
+            .map(item -> item.containPattern)
+            .collect(Collectors.toSet());
     }
 
     public static Set<Pattern> getEqualPatterns() {
-        if (equalPatterns.isEmpty()) {
-            for (Placeholders words : Placeholders.values()) {
-                equalPatterns.add(words.equalPattern);
-            }
-        }
-
-        return equalPatterns;
+        return Stream.of(values())
+            .map(item -> item.equalPattern)
+            .collect(Collectors.toSet());
     }
 }

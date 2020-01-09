@@ -1,25 +1,30 @@
 package com.github.borsch.mongomery;
 
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
+import java.util.regex.Pattern;
+
 import com.github.borsch.mongomery.strategy.AssertStrategy;
 
 import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
 
-import java.util.*;
-import java.util.regex.Pattern;
-
 public class DBState {
 
-    private final Map<String, Set<JSONObject>> collectionToDocuments = new HashMap<String, Set<JSONObject>>();
-    private final Map<String, AssertStrategy> collectionToMatchStrategy = new HashMap<String, AssertStrategy>();
+    private final Map<String, Set<JSONObject>> collectionToDocuments = new HashMap<>();
+    private final Map<String, AssertStrategy> collectionToMatchStrategy = new HashMap<>();
 
-    public DBState(JSONObject object) {
-        for (Map.Entry<String, Object> collections : object.entrySet()) {
+    public DBState(final JSONObject object) {
+        for (final Map.Entry<String, Object> collections : object.entrySet()) {
             collectionToMatchStrategy.put(collections.getKey(), AssertStrategy.STRICT_MATCH_STRATEGY);
 
-            for (Pattern pattern : Placeholders.getContainPatterns()) {
-                String val = collections.getValue().toString();
+            for (final Pattern pattern : Placeholders.getContainPatterns()) {
+                final String val = collections.getValue().toString();
 
                 if (pattern.matcher(val).find()) {
                     collectionToMatchStrategy.put(collections.getKey(), AssertStrategy.PATTERN_MATCH_STRATEGY);
@@ -32,7 +37,7 @@ public class DBState {
         }
     }
 
-    public boolean containsCollection(String name) {
+    public boolean containsCollection(final String name) {
         return collectionToDocuments.containsKey(name);
     }
 
@@ -41,23 +46,22 @@ public class DBState {
     }
 
     public SortedSet<String> getCollectionNames() {
-        return new TreeSet<String>(collectionToDocuments.keySet());
+        return new TreeSet<>(collectionToDocuments.keySet());
     }
 
-    public Set<JSONObject> getDocuments(String collectionName) {
+    public Set<JSONObject> getDocuments(final String collectionName) {
         return collectionToDocuments.get(collectionName);
     }
 
-    public AssertStrategy getMatchStrategy(String collectionName) {
+    public AssertStrategy getMatchStrategy(final String collectionName) {
         return collectionToMatchStrategy.get(collectionName);
     }
 
-    private Set<JSONObject> toJavaSet(JSONArray documents) {
+    private Set<JSONObject> toJavaSet(final JSONArray documents) {
         final Set<JSONObject> objects = new HashSet<JSONObject>();
 
-        for (Object doc : documents) {
-            JSONObject document = (JSONObject) doc;
-            objects.add(document);
+        for (final Object doc : documents) {
+            objects.add((JSONObject) doc);
         }
 
         return objects;
