@@ -7,9 +7,13 @@ from a json file and also do assertions about db state using a json file.
     <dependency>
       <groupId>com.github.borsch</groupId>
       <artifactId>mongomery</artifactId>
-      <version>0.1.0-SNAPSHOT</version>
+      <version>wanted-version</version>
     </dependency>
+    
+## change log
+0.1.0 - 11/01/2020 - first release
 
+## how to use
 Assume you have "predefinedTestData.json" file in you resources folder that looks like this:
 
     {
