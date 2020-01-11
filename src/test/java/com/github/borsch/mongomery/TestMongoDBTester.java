@@ -1,26 +1,43 @@
 package com.github.borsch.mongomery;
 
+import java.io.IOException;
 import java.io.InputStream;
 
+import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.github.fakemongo.Fongo;
-import com.mongodb.DB;
+import com.mongodb.MongoClient;
+import com.mongodb.client.MongoDatabase;
+
+import de.flapdoodle.embed.mongo.distribution.Version;
+import de.flapdoodle.embed.mongo.tests.MongodForTestsFactory;
 import net.minidev.json.JSONObject;
 
 public class TestMongoDBTester {
 
-    private MongoDBTester mongoDBTester;
+    private static MongoDBTester mongoDBTester;
+    private static MongodForTestsFactory factory = null;
+
+    @BeforeClass
+    public static void init() throws IOException {
+        factory = MongodForTestsFactory.with(Version.Main.V3_3);
+
+        final MongoClient mongo = factory.newMongo();
+        final MongoDatabase db = mongo.getDatabase("test");
+        mongoDBTester = new MongoDBTester(db, "/expected/", "/predefined/");
+    }
 
     @Before
-    public void init() {
-        if (mongoDBTester == null) {
-            final DB db = new Fongo("FongoServer").getDB("test");
-            mongoDBTester = new MongoDBTester(db, "/expected/", "/predefined/");
-        } else {
-            mongoDBTester.dropDataBase();
-        }
+    public void beforeMethod() {
+        mongoDBTester.dropDataBase();
+    }
+
+    @AfterClass
+    public static void shutdown() {
+        if (factory != null)
+            factory.shutdown();
     }
 
     @Test

@@ -1,9 +1,6 @@
 {
   "TestCollection": [
     {
-      "_id": {
-        "$oid": "55f92b343944ec3f14a94459"
-      },
       "emails": [
         "firs@email.com",
         "second@email.com"

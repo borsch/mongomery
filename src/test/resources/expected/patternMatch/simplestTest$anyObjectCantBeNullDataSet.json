@@ -1,7 +1,7 @@
 {
   "Account": [
     {
-      "_id": {"$oid":"55f92b343944ec3f14a94459"},
+      "_id": "$anyObject()",
       "email": "$anyObject()",
       "firstName": "firstName",
       "secondName": "secondName",

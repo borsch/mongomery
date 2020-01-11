@@ -1,9 +1,7 @@
 {
   "TestCollection": [
     {
-      "_id": {
-        "$oid": "55f92b343944ec3f14a94459"
-      },
+      "_id": "$anyObject()",
       "emails": [
         "$anyString()",
         "second@email.com"

@@ -58,7 +58,7 @@ public class DBState {
     }
 
     private Set<JSONObject> toJavaSet(final JSONArray documents) {
-        final Set<JSONObject> objects = new HashSet<JSONObject>();
+        final Set<JSONObject> objects = new HashSet<>();
 
         for (final Object doc : documents) {
             objects.add((JSONObject) doc);

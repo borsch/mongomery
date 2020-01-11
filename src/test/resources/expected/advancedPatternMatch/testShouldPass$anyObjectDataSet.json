@@ -1,9 +1,7 @@
 {
   "Vocabulary": [
     {
-      "_id": {
-        "$oid": "55f3ed00b1375a48e61830bf"
-      },
+      "_id": "$anyObject()",
       "complexObj": "$anyObject(3)"
     }
   ]

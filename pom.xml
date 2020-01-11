@@ -76,6 +76,7 @@
         <maven.compiler.version>3.8.1</maven.compiler.version>
 
         <mongo.driver.version>3.0.2</mongo.driver.version>
+        <de.flapdoodle.embed.mongo.version>2.2.0</de.flapdoodle.embed.mongo.version>
     </properties>
 
     <dependencies>
@@ -95,11 +96,10 @@
             <version>${mongo.driver.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.github.fakemongo</groupId>
-            <artifactId>fongo</artifactId>
-            <version>2.0.1</version>
+            <groupId>de.flapdoodle.embed</groupId>
+            <artifactId>de.flapdoodle.embed.mongo</artifactId>
+            <version>${de.flapdoodle.embed.mongo.version}</version>
             <scope>test</scope>
-            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>

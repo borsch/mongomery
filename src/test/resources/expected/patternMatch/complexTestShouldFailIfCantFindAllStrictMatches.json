@@ -1,17 +1,13 @@
 {
   "Account": [
     {
-      "_id": {
-        "$oid": "51f92b343944ec3f14a94459"
-      },
+      "_id": "$anyObject()",
       "firstName": "testFirstName1",
       "secondName": "testSecondName1",
       "confirmed": true
     },
     {
-      "_id": {
-        "$oid": "52f92b343944ec3f14a94459"
-      },
+      "_id": "$anyObject()",
       "firstName": "$anyString()",
       "secondName": "testSecondName2",
       "confirmed": false
@@ -23,17 +19,13 @@
       "confirmed": true
     },
     {
-      "_id": {
-        "$oid": "54f92b343944ec3f14a94459"
-      },
+      "_id": "$anyObject()",
       "firstName": "testFirstName4",
       "secondName": "$anyString()",
       "confirmed": true
     },
     {
-      "_id": {
-        "$oid": "55f92b343944ec3f14a94459"
-      },
+      "_id": "$anyObject()",
       "firstName": "fakeName",
       "secondName": "testSecondName5",
       "confirmed": true
