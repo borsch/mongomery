@@ -75,7 +75,8 @@
 
         <maven.compiler.version>3.8.1</maven.compiler.version>
 
-        <mongo.driver.version>3.0.2</mongo.driver.version>
+        <!-- http://mongodb.github.io/mongo-java-driver/3.7/whats-new/#jsr-310-instant-localdate-localdatetime-support -->
+        <mongo.driver.version>3.7.1</mongo.driver.version>
         <de.flapdoodle.embed.mongo.version>2.2.0</de.flapdoodle.embed.mongo.version>
     </properties>
 
