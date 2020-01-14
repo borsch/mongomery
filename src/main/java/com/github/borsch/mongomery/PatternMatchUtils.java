@@ -1,5 +1,6 @@
 package com.github.borsch.mongomery;
 
+import static com.github.borsch.mongomery.Placeholders.ANY_LONG_VALUE;
 import static com.github.borsch.mongomery.Placeholders.ANY_OBJECT;
 import static com.github.borsch.mongomery.Placeholders.ANY_OBJECT_WITH_ARG;
 import static com.github.borsch.mongomery.Placeholders.ANY_STRING;
@@ -38,8 +39,7 @@ public class PatternMatchUtils {
 
                     if (o == null) {
                         return null;
-                    } else if ((ANY_STRING.eq($s[1]) && o instanceof String) ||
-                            (ANY_OBJECT.eq($s[1]) && o instanceof JSONObject)) {
+                    } else if (isAnyNoArgPattern($s[1], o)) {
                         clone = createMergedObj(trace, properties, clone.getAsString($s[0]));
                     } else if (ANY_OBJECT_WITH_ARG.eq($s[1]) && o instanceof JSONObject) {
                         int numOfObjs = Integer.parseInt($s[1].substring(11, $s[1].lastIndexOf(')')));
@@ -51,7 +51,7 @@ public class PatternMatchUtils {
                         if (((String) o).matches(regex)) {
                             clone = createMergedObj(trace, properties, clone.getAsString($s[0]));
                         }
-                    } else if (isLongEqPattern($s[1], o)) {
+                    } else if (isLongValue(EQ_LONG_VALUE, $s[1], o)) {
                         final long actualLong = Long.parseLong(((JSONObject) o).get(NUMBER_LONG_KEY).toString());
                         final long expectedLong = Long.parseLong($s[1].substring(13, $s[1].indexOf(')')));
 
@@ -185,8 +185,20 @@ public class PatternMatchUtils {
         return count;
     }
 
-    private static boolean isLongEqPattern(final String $pattern, final Object object) {
-        if (EQ_LONG_VALUE.eq($pattern) && object instanceof JSONObject) {
+    /**
+     * check if object is equal to any non strict match pattern
+     * @param $pattern - pattern to be checked
+     * @param o - object under check
+     * @return {@code true} if {@param $pattern} belongs to any matcher, {@code false} otherwise
+     */
+    private static boolean isAnyNoArgPattern(final String $pattern, final Object o) {
+        return (ANY_STRING.eq($pattern) && o instanceof String) ||
+            (ANY_OBJECT.eq($pattern) && o instanceof JSONObject) ||
+            (isLongValue(ANY_LONG_VALUE, $pattern, o));
+    }
+
+    private static boolean isLongValue(final Placeholders longValueMatcher, final String $pattern, final Object object) {
+        if (longValueMatcher.eq($pattern) && object instanceof JSONObject) {
             final JSONObject jsonObject = (JSONObject) object;
 
             return jsonObject.size() == 1 && jsonObject.containsKey(NUMBER_LONG_KEY);

@@ -1,0 +1,10 @@
+{
+  "TestCollection": [
+    {
+      "_id": "$anyObject()",
+      "fieldLongValue": "$anyLongValue()"
+    }
+  ]
+}
+
+

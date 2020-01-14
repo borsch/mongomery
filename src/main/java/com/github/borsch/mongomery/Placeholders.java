@@ -10,6 +10,7 @@ public enum Placeholders {
     ANY_OBJECT_WITH_ARG("\\$anyObject\\(\\d{1,10}\\)"),
     ANY_STRING("\\$anyString\\(\\)"),
     ANY_STRING_WITH_ARG("\\$anyString\\(\\\\?/.+\\\\?/\\)"),
+    ANY_LONG_VALUE("\\$anyLongValue\\(\\)"),
 
     EQ_LONG_VALUE("\\$eqLongValue\\(\\d{1,20}\\)");
 

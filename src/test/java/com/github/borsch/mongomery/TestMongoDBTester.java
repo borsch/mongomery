@@ -105,19 +105,27 @@ public class TestMongoDBTester {
     }
 
     @Test
-    public void shouldCompareLongViaPatternMatch() {
+    public void shouldCompareLongViaEqualPatternMatch() {
         final JSONObject jsonObject = new JSONObject();
         jsonObject.put("fieldLongValue", 12345623534L);
         mongoDBTester.setDBState("TestCollection", jsonObject);
-        mongoDBTester.assertDBStateEquals("patternMatch/longValueMatch.json");
+        mongoDBTester.assertDBStateEquals("patternMatch/longValueMatch$eqPattern.json");
     }
 
     @Test(expected = AssertionError.class)
-    public void shouldFailToCompareLongViaPatternMatch() {
+    public void shouldFailToCompareLongViaEqualPatternMatchWhenValuesAreDifferent() {
         final JSONObject jsonObject = new JSONObject();
         jsonObject.put("fieldLongValue", 1L);
         mongoDBTester.setDBState("TestCollection", jsonObject);
-        mongoDBTester.assertDBStateEquals("patternMatch/longValueMatch.json");
+        mongoDBTester.assertDBStateEquals("patternMatch/longValueMatch$eqPattern.json");
+    }
+
+    @Test
+    public void shouldCompareLongViaAnyPatternMatch() {
+        final JSONObject jsonObject = new JSONObject();
+        jsonObject.put("fieldLongValue", 12345623534L);
+        mongoDBTester.setDBState("TestCollection", jsonObject);
+        mongoDBTester.assertDBStateEquals("patternMatch/longValueMatch$anyPattern.json");
     }
 
     @Test(expected = UnsupportedOperationException.class)

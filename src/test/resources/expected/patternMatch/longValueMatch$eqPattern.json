@@ -1,0 +1,10 @@
+{
+  "TestCollection": [
+    {
+      "_id": "$anyObject()",
+      "fieldLongValue": "$eqLongValue(12345623534)"
+    }
+  ]
+}
+
+
