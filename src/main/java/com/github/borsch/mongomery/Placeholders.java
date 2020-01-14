@@ -9,7 +9,9 @@ public enum Placeholders {
     ANY_OBJECT("\\$anyObject\\(\\)"),
     ANY_OBJECT_WITH_ARG("\\$anyObject\\(\\d{1,10}\\)"),
     ANY_STRING("\\$anyString\\(\\)"),
-    ANY_STRING_WITH_ARG("\\$anyString\\(\\\\?/.+\\\\?/\\)");
+    ANY_STRING_WITH_ARG("\\$anyString\\(\\\\?/.+\\\\?/\\)"),
+
+    EQ_LONG_VALUE("\\$eqLongValue\\(\\d{1,20}\\)");
 
     private final Pattern containPattern;
     private final Pattern equalPattern;

@@ -96,12 +96,28 @@ public class TestMongoDBTester {
 
     @Test(expected = IllegalArgumentException.class)
     public void shouldFailIfUserUsesPlaceholderMixedWithCharInString() {
-        JSONObject jsonObject = new JSONObject();
+        final JSONObject jsonObject = new JSONObject();
         jsonObject.put("_id", "$anyObject()");
         jsonObject.put("email", " $anyString()");
         jsonObject.put("firstName", "firstName)");
         mongoDBTester.setDBState("TestCollection", jsonObject);
         mongoDBTester.assertDBStateEquals("patternMatch/placeholderCantBeMixedWithCharacter.json");
+    }
+
+    @Test
+    public void shouldCompareLongViaPatternMatch() {
+        final JSONObject jsonObject = new JSONObject();
+        jsonObject.put("fieldLongValue", 12345623534L);
+        mongoDBTester.setDBState("TestCollection", jsonObject);
+        mongoDBTester.assertDBStateEquals("patternMatch/longValueMatch.json");
+    }
+
+    @Test(expected = AssertionError.class)
+    public void shouldFailToCompareLongViaPatternMatch() {
+        final JSONObject jsonObject = new JSONObject();
+        jsonObject.put("fieldLongValue", 1L);
+        mongoDBTester.setDBState("TestCollection", jsonObject);
+        mongoDBTester.assertDBStateEquals("patternMatch/longValueMatch.json");
     }
 
     @Test(expected = UnsupportedOperationException.class)

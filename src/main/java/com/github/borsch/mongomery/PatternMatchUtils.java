@@ -4,6 +4,7 @@ import static com.github.borsch.mongomery.Placeholders.ANY_OBJECT;
 import static com.github.borsch.mongomery.Placeholders.ANY_OBJECT_WITH_ARG;
 import static com.github.borsch.mongomery.Placeholders.ANY_STRING;
 import static com.github.borsch.mongomery.Placeholders.ANY_STRING_WITH_ARG;
+import static com.github.borsch.mongomery.Placeholders.EQ_LONG_VALUE;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -16,6 +17,9 @@ import java.util.regex.Pattern;
 import net.minidev.json.JSONObject;
 
 public class PatternMatchUtils {
+
+    private static final String NUMBER_LONG_KEY = "$numberLong";
+
     private PatternMatchUtils() {
     }
 
@@ -24,7 +28,7 @@ public class PatternMatchUtils {
 
         for (final String prop : props) {
             final String[] properties = prop.split("\\.");
-            LinkedList<JSONObject> trace = new LinkedList<JSONObject>();
+            LinkedList<JSONObject> trace = new LinkedList<>();
             trace.add(clone);
 
             for (int i = 0; i < properties.length; i++) {
@@ -47,7 +51,14 @@ public class PatternMatchUtils {
                         if (((String) o).matches(regex)) {
                             clone = createMergedObj(trace, properties, clone.getAsString($s[0]));
                         }
-                    } else {
+                    } else if (isLongEqPattern($s[1], o)) {
+                        final long actualLong = Long.parseLong(((JSONObject) o).get(NUMBER_LONG_KEY).toString());
+                        final long expectedLong = Long.parseLong($s[1].substring(13, $s[1].indexOf(')')));
+
+                        if (actualLong == expectedLong) {
+                            clone = createMergedObj(trace, properties, clone.getAsString($s[0]));
+                        }
+                    } else  {
                         return null;
                     }
                 } else {
@@ -172,5 +183,15 @@ public class PatternMatchUtils {
         }
 
         return count;
+    }
+
+    private static boolean isLongEqPattern(final String $pattern, final Object object) {
+        if (EQ_LONG_VALUE.eq($pattern) && object instanceof JSONObject) {
+            final JSONObject jsonObject = (JSONObject) object;
+
+            return jsonObject.size() == 1 && jsonObject.containsKey(NUMBER_LONG_KEY);
+        }
+
+        return false;
     }
 }
