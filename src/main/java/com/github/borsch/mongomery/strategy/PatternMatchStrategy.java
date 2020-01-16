@@ -1,12 +1,12 @@
 package com.github.borsch.mongomery.strategy;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
-
-import org.junit.Assert;
 
 import com.github.borsch.mongomery.PatternMatchUtils;
 
@@ -15,9 +15,13 @@ import net.minidev.json.JSONObject;
 public class PatternMatchStrategy implements AssertStrategy {
 
     @Override
-    public void assertTheSame(final Set<JSONObject> expectedObjects, final Set<JSONObject> actualObjects) {
-        Assert.assertEquals("Size of collection in db is different from described in json file",
-                expectedObjects.size(), actualObjects.size());
+    public void assertTheSame(final String collectionName, final Set<JSONObject> expectedObjects, final Set<JSONObject> actualObjects) {
+        assertThat(expectedObjects)
+            .withFailMessage(
+                "Collection %s has different elements size. Expected size: %s, actual size: %s.\nExpected elements: %s\nActual elements: %s",
+                collectionName, expectedObjects.size(), actualObjects.size(), expectedObjects, actualObjects
+            )
+            .hasSameSizeAs(actualObjects);
 
         final Map<JSONObject, Set<String>> patternMatchExpectedObjects = new HashMap<>();
         final Set<JSONObject> strictMatchExpectedObjects = new HashSet<>();
@@ -44,8 +48,9 @@ public class PatternMatchStrategy implements AssertStrategy {
 
         if (actualObjectsCopy.size() != patternMatchExpectedObjectsSize) {
             strictMatchExpectedObjects.removeAll(actualObjects);
-            throw new AssertionError("Can't find strict match for " + strictMatchExpectedObjects.size()
-                    + " EXPECTED object(s): " + strictMatchExpectedObjects);
+            throw new AssertionError(String.format(
+                "Can't find pattern match for %s element(s).\nUnmatched objects: %s", strictMatchExpectedObjects.size(), strictMatchExpectedObjects
+            ));
         }
 
         return actualObjectsCopy;
@@ -77,9 +82,13 @@ public class PatternMatchStrategy implements AssertStrategy {
             }
         }
 
-        if (!unmatchedActualObjects.isEmpty()) {
-            throw new AssertionError("Can't find pattern match for "
-                    + unmatchedActualObjects.size() + " ACTUAL object(s): " + unmatchedActualObjects);
-        }
+        assertThat(unmatchedActualObjects)
+            .withFailMessage("Can't find pattern match for %s element(s).\nUnmatched objects: %s", unmatchedActualObjects.size(), unmatchedActualObjects)
+            .isEmpty();
+//
+//        if (!unmatchedActualObjects.isEmpty()) {
+//            throw new AssertionError("Can't find pattern match for "
+//                    + unmatchedActualObjects.size() + " ACTUAL object(s): " + unmatchedActualObjects);
+//        }
     }
 }

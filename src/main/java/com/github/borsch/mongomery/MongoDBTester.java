@@ -1,5 +1,7 @@
 package com.github.borsch.mongomery;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
@@ -11,7 +13,6 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 import org.bson.Document;
-import org.junit.Assert;
 
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
@@ -119,7 +120,7 @@ public class MongoDBTester {
         for (final String collectionName : dbState.getCollectionNames()) {
             final Set<JSONObject> actualDocs = getAllDocumentsFromDb(collectionName);
             final Set<JSONObject> expectedDocs = dbState.getDocuments(collectionName);
-            dbState.getMatchStrategy(collectionName).assertTheSame(expectedDocs, actualDocs);
+            dbState.getMatchStrategy(collectionName).assertTheSame(collectionName, expectedDocs, actualDocs);
         }
     }
 
@@ -133,8 +134,12 @@ public class MongoDBTester {
             }
         }
 
-        Assert.assertEquals("Names of collections in db is different from described in json file!",
-                dbState.getCollectionNames(), collectionsInDb);
+        assertThat(dbState.getCollectionNames())
+            .withFailMessage(
+                "Names of collections in db is different from described in json file!\nExpected: %s\nActual: %s",
+                dbState.getCollectionNames(), collectionsInDb
+            )
+            .isEqualTo(collectionsInDb);
     }
 
     private Set<JSONObject> getAllDocumentsFromDb(final String collectionName) {

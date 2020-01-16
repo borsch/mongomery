@@ -1,8 +1,8 @@
 package com.github.borsch.mongomery.strategy;
 
-import java.util.Set;
+import static org.assertj.core.api.Assertions.assertThat;
 
-import org.junit.Assert;
+import java.util.Set;
 
 import net.minidev.json.JSONObject;
 
@@ -13,8 +13,13 @@ import net.minidev.json.JSONObject;
 public class StrictMatchStrategy implements AssertStrategy {
 
     @Override
-    public void assertTheSame(final Set<JSONObject> expected, final Set<JSONObject> actual) {
-        Assert.assertEquals("Documents in db collection are different from described in json file!", expected, actual);
+    public void assertTheSame(String collectionName, final Set<JSONObject> expected, final Set<JSONObject> actual) {
+        assertThat(expected)
+            .withFailMessage(
+                "Collection %s doesn't match with expected.\nExpected elements: %s\nActual elements: %s",
+                collectionName, expected, actual
+            )
+            .isEqualTo(actual);
     }
 
 }
