@@ -1,0 +1,22 @@
+{
+  "TestCollection": [
+    {
+      "_id": 1,
+      "field1:": "value1",
+      "field2:": "value2",
+      "field3:": "value3"
+    },
+    {
+      "_id": 2,
+      "field1:": "value11",
+      "field2:": "value22",
+      "field3:": "value33"
+    },
+    {
+      "_id": 3,
+      "field1:": "value111",
+      "field2:": "value222",
+      "field3:": "value333"
+    }
+  ]
+}

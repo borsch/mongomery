@@ -9,5 +9,5 @@ public interface AssertStrategy {
     PatternMatchStrategy PATTERN_MATCH_STRATEGY = new PatternMatchStrategy();
     StrictMatchStrategy STRICT_MATCH_STRATEGY = new StrictMatchStrategy();
 
-    void assertTheSame(Set<JSONObject> expected, Set<JSONObject> actual);
+    void assertTheSame(String collectionName, Set<JSONObject> expected, Set<JSONObject> actual);
 }
