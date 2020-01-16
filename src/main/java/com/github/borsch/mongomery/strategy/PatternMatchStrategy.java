@@ -85,10 +85,5 @@ public class PatternMatchStrategy implements AssertStrategy {
         assertThat(unmatchedActualObjects)
             .withFailMessage("Can't find pattern match for %s element(s).\nUnmatched objects: %s", unmatchedActualObjects.size(), unmatchedActualObjects)
             .isEmpty();
-//
-//        if (!unmatchedActualObjects.isEmpty()) {
-//            throw new AssertionError("Can't find pattern match for "
-//                    + unmatchedActualObjects.size() + " ACTUAL object(s): " + unmatchedActualObjects);
-//        }
     }
 }
