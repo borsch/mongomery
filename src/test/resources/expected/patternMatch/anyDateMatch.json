@@ -1,0 +1,12 @@
+{
+  "TestCollection": [
+    {
+      "_id": "$anyObject()",
+      "date": "$anyDate()",
+      "localDate": "$anyDate()",
+      "time": "$anyDate()",
+      "localDateTime": "$anyDate()",
+      "stringField": "some-string"
+    }
+  ]
+}

@@ -1,5 +1,6 @@
 package com.github.borsch.mongomery;
 
+import static com.github.borsch.mongomery.Placeholders.ANY_DATE;
 import static com.github.borsch.mongomery.Placeholders.ANY_LONG_VALUE;
 import static com.github.borsch.mongomery.Placeholders.ANY_OBJECT;
 import static com.github.borsch.mongomery.Placeholders.ANY_OBJECT_WITH_ARG;
@@ -20,6 +21,7 @@ import net.minidev.json.JSONObject;
 public class PatternMatchUtils {
 
     private static final String NUMBER_LONG_KEY = "$numberLong";
+    private static final String DATE_KEY = "$date";
 
     private PatternMatchUtils() {
     }
@@ -194,7 +196,8 @@ public class PatternMatchUtils {
     private static boolean isAnyNoArgPattern(final String $pattern, final Object o) {
         return (ANY_STRING.eq($pattern) && o instanceof String) ||
             (ANY_OBJECT.eq($pattern) && o instanceof JSONObject) ||
-            (isLongValue(ANY_LONG_VALUE, $pattern, o));
+            isLongValue(ANY_LONG_VALUE, $pattern, o) ||
+            isDateValue($pattern, o);
     }
 
     private static boolean isLongValue(final Placeholders longValueMatcher, final String $pattern, final Object object) {
@@ -202,6 +205,16 @@ public class PatternMatchUtils {
             final JSONObject jsonObject = (JSONObject) object;
 
             return jsonObject.size() == 1 && jsonObject.containsKey(NUMBER_LONG_KEY);
+        }
+
+        return false;
+    }
+
+    private static boolean isDateValue(final String $pattern, final Object object) {
+        if (ANY_DATE.eq($pattern) && object instanceof JSONObject) {
+            final JSONObject jsonObject = (JSONObject) object;
+
+            return jsonObject.size() == 1 && jsonObject.containsKey(DATE_KEY);
         }
 
         return false;

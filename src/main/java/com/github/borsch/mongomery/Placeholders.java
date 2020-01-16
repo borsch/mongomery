@@ -11,6 +11,7 @@ public enum Placeholders {
     ANY_STRING("\\$anyString\\(\\)"),
     ANY_STRING_WITH_ARG("\\$anyString\\(\\\\?/.+\\\\?/\\)"),
     ANY_LONG_VALUE("\\$anyLongValue\\(\\)"),
+    ANY_DATE("\\$anyDate\\(\\)"),
 
     EQ_LONG_VALUE("\\$eqLongValue\\(\\d{1,20}\\)");
 
