@@ -4,6 +4,10 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.Date;
 
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -196,5 +200,19 @@ public class TestMongoDBTester {
         assertThatThrownBy(() -> mongoDBTester.assertDBStateEquals("patternMatch/patternMatch_withStrictMatch.json"))
             .isInstanceOf(AssertionError.class)
             .hasMessageStartingWith("Can't find pattern match for 1 element(s).");
+    }
+
+    @Test
+    public void shouldMathAnyDate() {
+        final JSONObject dbState = new JSONObject();
+        dbState.put("date", new Date());
+        dbState.put("localDate", LocalDate.now());
+        dbState.put("time", LocalTime.now());
+        dbState.put("localDateTime", LocalDateTime.now());
+        dbState.put("stringField", "some-string");
+
+        mongoDBTester.setDBState("TestCollection", dbState);
+
+        mongoDBTester.assertDBStateEquals("patternMatch/anyDateMatch.json");
     }
 }
