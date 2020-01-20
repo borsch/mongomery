@@ -1,4 +1,4 @@
-package com.github.borsch.mongomery.strategy;
+package com.github.borsch.mongomery.matching;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -15,7 +15,9 @@ import net.minidev.json.JSONObject;
 public class PatternMatchStrategy implements AssertStrategy {
 
     @Override
-    public void assertTheSame(final String collectionName, final Set<JSONObject> expectedObjects, final Set<JSONObject> actualObjects) {
+    public void assertTheSame(
+        final String collectionName, final Set<JSONObject> expectedObjects, final Set<JSONObject> actualObjects, final Set<String> ignorePath
+    ) {
         assertThat(expectedObjects)
             .withFailMessage(
                 "Collection %s has different elements size. Expected size: %s, actual size: %s.\nExpected elements: %s\nActual elements: %s",

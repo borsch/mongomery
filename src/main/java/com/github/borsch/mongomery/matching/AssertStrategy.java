@@ -1,4 +1,4 @@
-package com.github.borsch.mongomery.strategy;
+package com.github.borsch.mongomery.matching;
 
 import java.util.Set;
 
@@ -9,5 +9,5 @@ public interface AssertStrategy {
     PatternMatchStrategy PATTERN_MATCH_STRATEGY = new PatternMatchStrategy();
     StrictMatchStrategy STRICT_MATCH_STRATEGY = new StrictMatchStrategy();
 
-    void assertTheSame(String collectionName, Set<JSONObject> expected, Set<JSONObject> actual);
+    void assertTheSame(String collectionName, Set<JSONObject> expected, Set<JSONObject> actual, Set<String> ignorePath);
 }

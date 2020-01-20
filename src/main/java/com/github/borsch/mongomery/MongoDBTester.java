@@ -38,14 +38,13 @@ public class MongoDBTester {
     private final String expectedFilesRoot;
     private final String predefinedFilesRoot;
     private final MongoDatabase db;
+    private final Set<String> ignorePath;
 
     /**
      * @param db mongodb instance.
      */
     public MongoDBTester(final MongoDatabase db) {
-        this.expectedFilesRoot = "/";
-        this.predefinedFilesRoot = "/";
-        this.db = db;
+        this(db, "/", "/");
     }
 
     /**
@@ -57,6 +56,11 @@ public class MongoDBTester {
         this.expectedFilesRoot = expectedFilesRoot;
         this.predefinedFilesRoot = predefinedFilesRoot;
         this.db = db;
+        this.ignorePath = new HashSet<>();
+    }
+
+    public void addIgnorePaths(final String... ignorePath) {
+        Collections.addAll(this.ignorePath, ignorePath);
     }
 
     /**
@@ -120,7 +124,7 @@ public class MongoDBTester {
         for (final String collectionName : dbState.getCollectionNames()) {
             final Set<JSONObject> actualDocs = getAllDocumentsFromDb(collectionName);
             final Set<JSONObject> expectedDocs = dbState.getDocuments(collectionName);
-            dbState.getMatchStrategy(collectionName).assertTheSame(collectionName, expectedDocs, actualDocs);
+            dbState.getMatchStrategy(collectionName).assertTheSame(collectionName, expectedDocs, actualDocs, ignorePath);
         }
     }
 
