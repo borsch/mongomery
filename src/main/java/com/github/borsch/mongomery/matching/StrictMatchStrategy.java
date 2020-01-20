@@ -1,7 +1,5 @@
 package com.github.borsch.mongomery.matching;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import java.util.Set;
 
 import net.minidev.json.JSONObject;
@@ -16,14 +14,14 @@ public class StrictMatchStrategy implements AssertStrategy {
     public void assertTheSame(
         final String collectionName, final Set<JSONObject> expected, final Set<JSONObject> actual, final Set<String> ignorePath
     ) {
-        MatchingUtil.match(actual, expected, ignorePath);
+        MatchingUtil.removeSameElement(actual, expected, ignorePath);
 
-        assertThat(expected)
-            .withFailMessage(
-                "Collection %s doesn't match with expected.\nExpected elements: %s\nActual elements: %s",
-                collectionName, expected, actual
-            )
-            .isEqualTo(actual);
+        if (!expected.isEmpty() || !actual.isEmpty()) {
+            throw new AssertionError(String.format(
+                "Collection %s doesn't match with expected.\nIgnore field(s): %s\nExpected don't match elements: %s\nActual don't match elements: %s",
+                collectionName, ignorePath, expected, actual
+            ));
+        }
     }
 
 }

@@ -14,19 +14,7 @@ class MatchingUtil {
 
     private static final Logger log = LoggerFactory.getLogger(MatchingUtil.class);
 
-    static void match(final Set<JSONObject> actualObjects, final Set<JSONObject> expectedObjects, final Set<String> ignorePath) {
-        if (actualObjects.equals(expectedObjects)) {
-            log.trace(
-                "Actual and expected are equals without ignoring fields.\nActual: {}\nExpected: {}\nIgnore path: {}",
-                actualObjects, expectedObjects, ignorePath
-            );
-            return;
-        }
-
-        if (ignorePath.isEmpty()) {
-            return;
-        }
-
+    static void removeSameElement(final Set<JSONObject> actualObjects, final Set<JSONObject> expectedObjects, final Set<String> ignorePath) {
         final Iterator<JSONObject> actualObjectsIterator = actualObjects.iterator();
         while (actualObjectsIterator.hasNext()) {
             final JSONObject actual = actualObjectsIterator.next();
@@ -92,7 +80,7 @@ class MatchingUtil {
             final String key = iterator.next();
 
             for (final String ignorePathItem : ignorePath) {
-                if (key.matches(ignorePathItem) || (key + "." + currentPath).matches(ignorePathItem)) {
+                if (key.matches(ignorePathItem) || (currentPath + "." + key).matches(ignorePathItem)) {
                     iterator.remove();
                     break;
                 }

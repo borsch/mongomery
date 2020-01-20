@@ -1,0 +1,16 @@
+{
+  "Collection": [
+    {
+      "stringField": "Value1",
+      "booleanField": true,
+      "subObjectField": {
+        "field2": "value2"
+      },
+      "subObjectField2": {
+        "subObjectField2": {
+          "field2": 2
+        }
+      }
+    }
+  ]
+}

@@ -73,6 +73,13 @@ public class MongoDBTester {
     }
 
     /**
+     * reset ignore path list
+     */
+    public void cleanIgnorePath() {
+        ignorePath.clear();
+    }
+
+    /**
      * @param filePath file path with json data which describes expected DB state.
      */
     public void assertDBStateEquals(final String filePath) {

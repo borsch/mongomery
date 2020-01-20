@@ -37,6 +37,7 @@ public class TestMongoDBTester {
 
     @Before
     public void beforeMethod() {
+        mongoDBTester.cleanIgnorePath();
         mongoDBTester.dropDataBase();
     }
 
@@ -214,5 +215,35 @@ public class TestMongoDBTester {
         mongoDBTester.setDBState("TestCollection", dbState);
 
         mongoDBTester.assertDBStateEquals("patternMatch/anyDateMatch.json");
+    }
+
+    @Test
+    public void shouldPassStrictMatchWithIgnoreFields() {
+        mongoDBTester.addIgnorePaths(
+            "_id",
+            "intField",
+            "subObjectField.field1",
+            "subObjectField2.subObjectField2.field1",
+            "subObjectField2.field1"
+        );
+
+        mongoDBTester.setDBState("strictMatch/strictMatchIgnoreFields.json");
+        mongoDBTester.assertDBStateEquals("strictMatch/strictMatchIgnoreFields_ok.json");
+    }
+
+    @Test
+    public void shouldFailStrictMatchWithIgnoreFields() {
+        mongoDBTester.addIgnorePaths(
+            "_id",
+            "intField",
+            "subObjectField.field1",
+            "subObjectField2.subObjectField2.field1",
+            "subObjectField2.field1"
+        );
+
+        mongoDBTester.setDBState("strictMatch/strictMatchIgnoreFields.json");
+        assertThatThrownBy(() -> mongoDBTester.assertDBStateEquals("strictMatch/strictMatchIgnoreFields_fail.json"))
+            .isInstanceOf(AssertionError.class)
+            .hasMessageStartingWith("Collection Collection doesn't match with expected.");
     }
 }
