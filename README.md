@@ -1,4 +1,4 @@
-[![CircleCI](https://circleci.com/gh/circleci/circleci-docs/tree/teesloane-patch-5.svg?style=svg)](https://circleci.com/gh/borsch/mongomery/tree/master)
+![](https://github.com/borsch/mongomery/workflows/Java%20CI/badge.svg)
 
 # mongomery
 Simple and useful util for unit and integration testing with mongodb (java 1.8+)
