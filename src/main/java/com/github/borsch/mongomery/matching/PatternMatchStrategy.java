@@ -1,4 +1,4 @@
-package com.github.borsch.mongomery.strategy;
+package com.github.borsch.mongomery.matching;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -15,7 +15,9 @@ import net.minidev.json.JSONObject;
 public class PatternMatchStrategy implements AssertStrategy {
 
     @Override
-    public void assertTheSame(final String collectionName, final Set<JSONObject> expectedObjects, final Set<JSONObject> actualObjects) {
+    public void assertTheSame(
+        final String collectionName, final Set<JSONObject> expectedObjects, final Set<JSONObject> actualObjects, final Set<String> ignorePath
+    ) {
         assertThat(expectedObjects)
             .withFailMessage(
                 "Collection %s has different elements size. Expected size: %s, actual size: %s.\nExpected elements: %s\nActual elements: %s",
@@ -36,28 +38,33 @@ public class PatternMatchStrategy implements AssertStrategy {
             }
         }
 
-        final Set<JSONObject> patternMatchCandidates = tryToMatchStrictly(strictMatchExpectedObjects,
-                patternMatchExpectedObjects.size(), actualObjects);
-        tryToMatchOverPattern(patternMatchExpectedObjects, patternMatchCandidates);
+        final Set<JSONObject> patternMatchCandidates = tryToMatchStrictly(
+            collectionName, strictMatchExpectedObjects, patternMatchExpectedObjects.size(), actualObjects, ignorePath
+        );
+        tryToMatchOverPattern(collectionName, patternMatchExpectedObjects, patternMatchCandidates, ignorePath);
     }
 
-    private Set<JSONObject> tryToMatchStrictly(final Set<JSONObject> strictMatchExpectedObjects,
-                                               final int patternMatchExpectedObjectsSize, final Set<JSONObject> actualObjects) {
+    private Set<JSONObject> tryToMatchStrictly(
+        final String collectionName, final Set<JSONObject> strictMatchExpectedObjects, final int patternMatchExpectedObjectsSize,
+        final Set<JSONObject> actualObjects, final Set<String> ignorePath
+    ) {
         final Set<JSONObject> actualObjectsCopy = new HashSet<>(actualObjects);
-        actualObjectsCopy.removeAll(strictMatchExpectedObjects);
+        MatchingUtil.removeSameElement(actualObjectsCopy, strictMatchExpectedObjects, ignorePath);
 
         if (actualObjectsCopy.size() != patternMatchExpectedObjectsSize) {
             strictMatchExpectedObjects.removeAll(actualObjects);
             throw new AssertionError(String.format(
-                "Can't find pattern match for %s element(s).\nUnmatched objects: %s", strictMatchExpectedObjects.size(), strictMatchExpectedObjects
+                "Can't find pattern match for %s element(s) in collection %s.\nUnmatched objects: %s",
+                strictMatchExpectedObjects.size(), collectionName, strictMatchExpectedObjects
             ));
         }
 
         return actualObjectsCopy;
     }
 
-    private void tryToMatchOverPattern(final Map<JSONObject, Set<String>> expectedObjects,
-                                       final Set<JSONObject> actualObjects) {
+    private void tryToMatchOverPattern(
+        final String collectionName, final Map<JSONObject, Set<String>> expectedObjects, final Set<JSONObject> actualObjects, final Set<String> ignorePath
+    ) {
         final Map<JSONObject, Set<String>> patternMatchExpectedObjects = new HashMap<>(expectedObjects);
         final Set<JSONObject> unmatchedActualObjects = new HashSet<>();
 
@@ -68,10 +75,11 @@ public class PatternMatchStrategy implements AssertStrategy {
 
             while (iterator.hasNext() && !isMatched) {
                 final Map.Entry<JSONObject, Set<String>> patternMatchObjAndPropsPaths = iterator.next();
-                final JSONObject object = PatternMatchUtils.applyPropsAndGetResultObj(actualObject,
-                        patternMatchObjAndPropsPaths.getValue());
+                final JSONObject object = PatternMatchUtils.applyPropsAndGetResultObj(
+                    actualObject, patternMatchObjAndPropsPaths.getValue()
+                );
 
-                if (object != null && object.equals(patternMatchObjAndPropsPaths.getKey())) {
+                if (object != null && MatchingUtil.isMatch(object, patternMatchObjAndPropsPaths.getKey(), ignorePath)) {
                     iterator.remove();
                     isMatched = true;
                 }
@@ -82,8 +90,15 @@ public class PatternMatchStrategy implements AssertStrategy {
             }
         }
 
-        assertThat(unmatchedActualObjects)
-            .withFailMessage("Can't find pattern match for %s element(s).\nUnmatched objects: %s", unmatchedActualObjects.size(), unmatchedActualObjects)
-            .isEmpty();
+        if (!unmatchedActualObjects.isEmpty() || !patternMatchExpectedObjects.isEmpty()) {
+            throw new AssertionError(String.format(
+                "Collection %s doesn't match with expected.\nIgnore field(s): %s\nExpected don't match elements: %s\nActual don't match elements: %s",
+                collectionName, ignorePath, unmatchedActualObjects, patternMatchExpectedObjects.keySet()
+            ));
+        }
+
+//        assertThat(unmatchedActualObjects)
+//            .withFailMessage("Can't find pattern match for %s element(s).\nUnmatched objects: %s", unmatchedActualObjects.size(), unmatchedActualObjects)
+//            .isEmpty();
     }
 }

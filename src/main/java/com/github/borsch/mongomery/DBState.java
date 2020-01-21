@@ -9,7 +9,7 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.regex.Pattern;
 
-import com.github.borsch.mongomery.strategy.AssertStrategy;
+import com.github.borsch.mongomery.matching.AssertStrategy;
 
 import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
