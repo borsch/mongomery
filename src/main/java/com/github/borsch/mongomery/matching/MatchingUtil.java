@@ -23,13 +23,17 @@ class MatchingUtil {
             while (expectedObjectsIterator.hasNext()) {
                 final JSONObject expected = expectedObjectsIterator.next();
 
-                if (isMatch(actual, expected, ignorePath, "")) {
+                if (isMatch(actual, expected, ignorePath)) {
                     actualObjectsIterator.remove();
                     expectedObjectsIterator.remove();
                     break;
                 }
             }
         }
+    }
+
+    static boolean isMatch(final JSONObject actual, final JSONObject expected, final Set<String> ignorePath) {
+        return isMatch(actual, expected, ignorePath, "");
     }
 
     private static boolean isMatch(final JSONObject actual, final JSONObject expected, final Set<String> ignorePath, final String currentPath) {

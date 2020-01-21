@@ -1,0 +1,18 @@
+{
+  "Collection": [
+    {
+      "stringField": "Value1",
+      "intField": 1,
+      "booleanField": true,
+      "subObjectField": {
+        "field1": "value1",
+        "field2": "value2"
+      },
+      "subObjectField2": {
+        "subObjectField2": "$anyObject()",
+        "field1": "differentValue",
+        "fieldDoesNotMatch": "value"
+      }
+    }
+  ]
+}
