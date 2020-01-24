@@ -1,0 +1,4 @@
+Collection Books doesn't match with expected.
+Ignore field(s): []
+Expected don't match elements: [{"originalTitle":"Le Petit Prince","author":"Antoine de SaintExupéry","_id":{"$oid":"55f3ed00b1375a40e61830bf"},"englishTitle":"The Little Prince"}]
+Actual don't match elements: [{"originalTitle":"Le Petit Prince","author":"Antoine de Saint-Exupéry","_id":1,"englishTitle":"The Little Prince"}]

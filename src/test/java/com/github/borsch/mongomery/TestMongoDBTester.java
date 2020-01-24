@@ -13,6 +13,8 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoDatabase;
@@ -47,10 +49,18 @@ class TestMongoDBTester {
             factory.shutdown();
     }
 
-    @Test
-    void strictMatchSimplestTestShouldPass() {
-        mongoDBTester.setDBState("strictMatch/simplestTestDataSet.json");
-        mongoDBTester.assertDBStateEquals("strictMatch/simplestTestShouldPassExpectedDataSet.json");
+    @ParameterizedTest
+    @CsvSource({
+        "simple strict match test, strictMatch/simplestTestDataSet.json, strictMatch/simplestTestShouldPassExpectedDataSet.json",
+        "pattern match with simple $anyObject() , patternMatch/simplestTest$anyObjectDataSet.json, patternMatch/simplestTest$anyObjectDataSet.json",
+        "pattern match: $anyObject() and $anyString(), patternMatch/simplestTest$anyObjectMixedWith$anyStringDataSet.json, patternMatch/simplestTest$anyObjectMixedWith$anyStringDataSet.json",
+        "pattern match: complex test, patternMatch/complexTestDataSet.json, patternMatch/complexTestDataSet.json",
+        "pattern match: $anyObject() with number of fields, advancedPatternMatch/testShouldPass$anyObjectDataSet.json, advancedPatternMatch/testShouldPass$anyObjectDataSet.json",
+        "pattern match: $anyString() with pattern, advancedPatternMatch/testShouldPass$anyStringDataSet.json, advancedPatternMatch/testShouldPass$anyStringDataSet.json"
+    })
+    void shouldPass(final String testName, final String setup, final String expected) {
+        mongoDBTester.setDBState(setup);
+        mongoDBTester.assertDBStateEquals(expected);
     }
 
     @Test
@@ -58,19 +68,7 @@ class TestMongoDBTester {
         mongoDBTester.setDBState("strictMatch/simplestTestDataSet.json");
         assertThatThrownBy(() -> mongoDBTester.assertDBStateEquals("strictMatch/simplestTestShouldFailExpectedDataSet.json"))
             .isInstanceOf(AssertionError.class)
-            .hasMessageStartingWith("Collection Books doesn't match with expected.");
-    }
-
-    @Test
-    void patternMatchOnlySimplestTestFor$AnyObjectShouldPass() {
-        mongoDBTester.setDBState("patternMatch/simplestTest$anyObjectDataSet.json");
-        mongoDBTester.assertDBStateEquals("patternMatch/simplestTest$anyObjectDataSet.json");
-    }
-
-    @Test
-    void simplestTest$anyObjectMixedWith$anyString() {
-        mongoDBTester.setDBState("patternMatch/simplestTest$anyObjectMixedWith$anyStringDataSet.json");
-        mongoDBTester.assertDBStateEquals("patternMatch/simplestTest$anyObjectMixedWith$anyStringDataSet.json");
+            .hasMessage(Utils.readFile("/error/strictMatch/simplestTestShouldFailExpectedDataSet.txt"));
     }
 
     @Test
@@ -87,12 +85,6 @@ class TestMongoDBTester {
         assertThatThrownBy(() -> mongoDBTester.assertDBStateEquals("patternMatch/simplestTest$anyStringCantBeNullDataSet.json"))
             .isInstanceOf(AssertionError.class)
             .hasMessageStartingWith("Collection Account doesn't match with expected.");
-    }
-
-    @Test
-    void complexTestShouldPass() {
-        mongoDBTester.setDBState("patternMatch/complexTestDataSet.json");
-        mongoDBTester.assertDBStateEquals("patternMatch/complexTestDataSet.json");
     }
 
     @Test
@@ -165,18 +157,6 @@ class TestMongoDBTester {
         assertThatThrownBy(() -> mongoDBTester.assertDBStateEquals("patternMatch/simplestTestShouldFail$anyObjectDataSet.json"))
             .isInstanceOf(AssertionError.class)
             .hasMessageStartingWith("Collection Account doesn't match with expected.");
-    }
-
-    @Test
-    void advancedPatternMatchShouldPass() {
-        mongoDBTester.setDBState("advancedPatternMatch/testShouldPass$anyStringDataSet.json");
-        mongoDBTester.assertDBStateEquals("advancedPatternMatch/testShouldPass$anyStringDataSet.json");
-    }
-
-    @Test
-    void testShouldPass$anyObjectDataSet() {
-        mongoDBTester.setDBState("advancedPatternMatch/testShouldPass$anyObjectDataSet.json");
-        mongoDBTester.assertDBStateEquals("advancedPatternMatch/testShouldPass$anyObjectDataSet.json");
     }
 
     @Test
