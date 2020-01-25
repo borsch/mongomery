@@ -1,12 +1,12 @@
-package com.github.borsch.mongomery;
+package com.github.borsch.mongomery.matching;
 
-import static com.github.borsch.mongomery.Placeholders.ANY_DATE;
-import static com.github.borsch.mongomery.Placeholders.ANY_LONG_VALUE;
-import static com.github.borsch.mongomery.Placeholders.ANY_OBJECT;
-import static com.github.borsch.mongomery.Placeholders.ANY_OBJECT_WITH_ARG;
-import static com.github.borsch.mongomery.Placeholders.ANY_STRING;
-import static com.github.borsch.mongomery.Placeholders.ANY_STRING_WITH_ARG;
-import static com.github.borsch.mongomery.Placeholders.EQ_LONG_VALUE;
+import static com.github.borsch.mongomery.matching.Placeholders.ANY_DATE;
+import static com.github.borsch.mongomery.matching.Placeholders.ANY_LONG_VALUE;
+import static com.github.borsch.mongomery.matching.Placeholders.ANY_OBJECT;
+import static com.github.borsch.mongomery.matching.Placeholders.ANY_OBJECT_WITH_ARG;
+import static com.github.borsch.mongomery.matching.Placeholders.ANY_STRING;
+import static com.github.borsch.mongomery.matching.Placeholders.ANY_STRING_WITH_ARG;
+import static com.github.borsch.mongomery.matching.Placeholders.EQ_LONG_VALUE;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -16,9 +16,11 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.github.borsch.mongomery.Utils;
+
 import net.minidev.json.JSONObject;
 
-public class PatternMatchUtils {
+class PatternMatchUtils {
 
     private static final String NUMBER_LONG_KEY = "$numberLong";
     private static final String DATE_KEY = "$date";
@@ -26,7 +28,7 @@ public class PatternMatchUtils {
     private PatternMatchUtils() {
     }
 
-    public static JSONObject applyPropsAndGetResultObj(final JSONObject object, final Set<String> props) {
+    static JSONObject applyPropsAndGetResultObj(final JSONObject object, final Set<String> props) {
         JSONObject clone = (JSONObject) object.clone();
 
         for (final String prop : props) {
@@ -89,7 +91,7 @@ public class PatternMatchUtils {
         return temp;
     }
 
-    public static Set<String> findPatternPropertiesPaths(final JSONObject object) {
+    static Set<String> findPatternPropertiesPaths(final JSONObject object) {
         int contains = countStringContainsPattern(object.toString());
 
         if (contains == 0) {
@@ -168,12 +170,12 @@ public class PatternMatchUtils {
         return newProps;
     }
 
-    public static boolean checkForEqualsPattern(final String value) {
+    static boolean checkForEqualsPattern(final String value) {
         return Placeholders.getEqualPatterns().stream()
             .anyMatch(pattern -> pattern.matcher(value).find());
     }
 
-    public static int countStringContainsPattern(final String string) {
+    static int countStringContainsPattern(final String string) {
         int count = 0;
 
         for (final Pattern pattern : Placeholders.getContainPatterns()) {

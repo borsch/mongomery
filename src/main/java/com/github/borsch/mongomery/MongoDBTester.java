@@ -14,6 +14,7 @@ import java.util.TreeSet;
 
 import org.bson.Document;
 
+import com.github.borsch.mongomery.matching.PatternMatchStrategy;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
@@ -131,7 +132,7 @@ public class MongoDBTester {
         for (final String collectionName : dbState.getCollectionNames()) {
             final Set<JSONObject> actualDocs = getAllDocumentsFromDb(collectionName);
             final Set<JSONObject> expectedDocs = dbState.getDocuments(collectionName);
-            dbState.getMatchStrategy(collectionName).assertTheSame(collectionName, expectedDocs, actualDocs, ignorePath);
+            PatternMatchStrategy.assertTheSame(collectionName, expectedDocs, actualDocs, ignorePath);
         }
     }
 

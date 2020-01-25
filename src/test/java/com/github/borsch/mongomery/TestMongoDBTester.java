@@ -224,7 +224,7 @@ class TestMongoDBTester {
         mongoDBTester.setDBState("strictMatch/strictMatchIgnoreFields.json");
         assertThatThrownBy(() -> mongoDBTester.assertDBStateEquals("strictMatch/strictMatchIgnoreFields_fail.json"))
             .isInstanceOf(AssertionError.class)
-            .hasMessageStartingWith("Collection Collection doesn't match with expected.");
+            .hasMessageStartingWith("Can't find pattern match for 1 element(s) in collection Collection.");
     }
 
     @Test

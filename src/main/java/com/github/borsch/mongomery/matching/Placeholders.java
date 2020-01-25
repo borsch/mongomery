@@ -1,11 +1,11 @@
-package com.github.borsch.mongomery;
+package com.github.borsch.mongomery.matching;
 
 import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public enum Placeholders {
+enum Placeholders {
     ANY_OBJECT("\\$anyObject\\(\\)"),
     ANY_OBJECT_WITH_ARG("\\$anyObject\\(\\d{1,10}\\)"),
     ANY_STRING("\\$anyString\\(\\)"),

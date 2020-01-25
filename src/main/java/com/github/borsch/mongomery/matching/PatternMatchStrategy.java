@@ -8,14 +8,11 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-import com.github.borsch.mongomery.PatternMatchUtils;
-
 import net.minidev.json.JSONObject;
 
-public class PatternMatchStrategy implements AssertStrategy {
+public class PatternMatchStrategy {
 
-    @Override
-    public void assertTheSame(
+    public static void assertTheSame(
         final String collectionName, final Set<JSONObject> expectedObjects, final Set<JSONObject> actualObjects, final Set<String> ignorePath
     ) {
         assertThat(expectedObjects)
@@ -44,7 +41,7 @@ public class PatternMatchStrategy implements AssertStrategy {
         tryToMatchOverPattern(collectionName, patternMatchExpectedObjects, patternMatchCandidates, ignorePath);
     }
 
-    private Set<JSONObject> tryToMatchStrictly(
+    private static Set<JSONObject> tryToMatchStrictly(
         final String collectionName, final Set<JSONObject> strictMatchExpectedObjects, final int patternMatchExpectedObjectsSize,
         final Set<JSONObject> actualObjects, final Set<String> ignorePath
     ) {
@@ -62,7 +59,7 @@ public class PatternMatchStrategy implements AssertStrategy {
         return actualObjectsCopy;
     }
 
-    private void tryToMatchOverPattern(
+    private static void tryToMatchOverPattern(
         final String collectionName, final Map<JSONObject, Set<String>> expectedObjects, final Set<JSONObject> actualObjects, final Set<String> ignorePath
     ) {
         final Map<JSONObject, Set<String>> patternMatchExpectedObjects = new HashMap<>(expectedObjects);
@@ -96,9 +93,5 @@ public class PatternMatchStrategy implements AssertStrategy {
                 collectionName, ignorePath, unmatchedActualObjects, patternMatchExpectedObjects.keySet()
             ));
         }
-
-//        assertThat(unmatchedActualObjects)
-//            .withFailMessage("Can't find pattern match for %s element(s).\nUnmatched objects: %s", unmatchedActualObjects.size(), unmatchedActualObjects)
-//            .isEmpty();
     }
 }
