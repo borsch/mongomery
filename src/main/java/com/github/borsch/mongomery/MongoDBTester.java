@@ -7,6 +7,8 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
@@ -130,8 +132,8 @@ public class MongoDBTester {
 
     private void assertDocumentsInCollectionAreEquals(final DBState dbState) {
         for (final String collectionName : dbState.getCollectionNames()) {
-            final Set<JSONObject> actualDocs = getAllDocumentsFromDb(collectionName);
-            final Set<JSONObject> expectedDocs = dbState.getDocuments(collectionName);
+            final List<JSONObject> actualDocs = getAllDocumentsFromDb(collectionName);
+            final List<JSONObject> expectedDocs = dbState.getDocuments(collectionName);
             PatternMatchStrategy.assertTheSame(collectionName, expectedDocs, actualDocs, ignorePath);
         }
     }
@@ -154,8 +156,8 @@ public class MongoDBTester {
             .isEqualTo(collectionsInDb);
     }
 
-    private Set<JSONObject> getAllDocumentsFromDb(final String collectionName) {
-        final Set<JSONObject> documents = new HashSet<>();
+    private List<JSONObject> getAllDocumentsFromDb(final String collectionName) {
+        final List<JSONObject> documents = new LinkedList<>();
         final FindIterable<Document> cursor = db.getCollection(collectionName).find();
 
         for (final Document document : cursor) {

@@ -3,8 +3,9 @@ package com.github.borsch.mongomery.matching;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -13,7 +14,7 @@ import net.minidev.json.JSONObject;
 public class PatternMatchStrategy {
 
     public static void assertTheSame(
-        final String collectionName, final Set<JSONObject> expectedObjects, final Set<JSONObject> actualObjects, final Set<String> ignorePath
+        final String collectionName, final List<JSONObject> expectedObjects, final List<JSONObject> actualObjects, final Set<String> ignorePath
     ) {
         assertThat(expectedObjects)
             .withFailMessage(
@@ -23,7 +24,7 @@ public class PatternMatchStrategy {
             .hasSameSizeAs(actualObjects);
 
         final Map<JSONObject, Set<String>> patternMatchExpectedObjects = new HashMap<>();
-        final Set<JSONObject> strictMatchExpectedObjects = new HashSet<>();
+        final List<JSONObject> strictMatchExpectedObjects = new LinkedList<>();
 
         for (final JSONObject object : expectedObjects) {
             final Set<String> patternPropertiesPaths = PatternMatchUtils.findPatternPropertiesPaths(object);
@@ -35,17 +36,17 @@ public class PatternMatchStrategy {
             }
         }
 
-        final Set<JSONObject> patternMatchCandidates = tryToMatchStrictly(
+        final List<JSONObject> patternMatchCandidates = tryToMatchStrictly(
             collectionName, strictMatchExpectedObjects, patternMatchExpectedObjects.size(), actualObjects, ignorePath
         );
         tryToMatchOverPattern(collectionName, patternMatchExpectedObjects, patternMatchCandidates, ignorePath);
     }
 
-    private static Set<JSONObject> tryToMatchStrictly(
-        final String collectionName, final Set<JSONObject> strictMatchExpectedObjects, final int patternMatchExpectedObjectsSize,
-        final Set<JSONObject> actualObjects, final Set<String> ignorePath
+    private static List<JSONObject> tryToMatchStrictly(
+        final String collectionName, final List<JSONObject> strictMatchExpectedObjects, final int patternMatchExpectedObjectsSize,
+        final List<JSONObject> actualObjects, final Set<String> ignorePath
     ) {
-        final Set<JSONObject> actualObjectsCopy = new HashSet<>(actualObjects);
+        final List<JSONObject> actualObjectsCopy = new LinkedList<>(actualObjects);
         MatchingUtil.removeSameElement(actualObjectsCopy, strictMatchExpectedObjects, ignorePath);
 
         if (actualObjectsCopy.size() != patternMatchExpectedObjectsSize) {
@@ -60,10 +61,10 @@ public class PatternMatchStrategy {
     }
 
     private static void tryToMatchOverPattern(
-        final String collectionName, final Map<JSONObject, Set<String>> expectedObjects, final Set<JSONObject> actualObjects, final Set<String> ignorePath
+        final String collectionName, final Map<JSONObject, Set<String>> expectedObjects, final List<JSONObject> actualObjects, final Set<String> ignorePath
     ) {
         final Map<JSONObject, Set<String>> patternMatchExpectedObjects = new HashMap<>(expectedObjects);
-        final Set<JSONObject> unmatchedActualObjects = new HashSet<>();
+        final List<JSONObject> unmatchedActualObjects = new LinkedList<>();
 
         for (final JSONObject actualObject : actualObjects) {
             boolean isMatched = false;

@@ -2,6 +2,7 @@ package com.github.borsch.mongomery.matching;
 
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
@@ -14,7 +15,7 @@ class MatchingUtil {
 
     private static final Logger log = LoggerFactory.getLogger(MatchingUtil.class);
 
-    static void removeSameElement(final Set<JSONObject> actualObjects, final Set<JSONObject> expectedObjects, final Set<String> ignorePath) {
+    static void removeSameElement(final List<JSONObject> actualObjects, final List<JSONObject> expectedObjects, final Set<String> ignorePath) {
         final Iterator<JSONObject> actualObjectsIterator = actualObjects.iterator();
         while (actualObjectsIterator.hasNext()) {
             final JSONObject actual = actualObjectsIterator.next();
