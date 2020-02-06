@@ -13,6 +13,7 @@ from a json file and also do assertions about db state using a json file.
     </dependency>
     
 ## change log
+- [0.3.1](https://github.com/borsch/mongomery/releases/tag/mongomery-0.3.1) - 06/02/2020
 - [0.3.0](https://github.com/borsch/mongomery/releases/tag/mongomery-0.3.0) - 26/01/2020
 - [0.2.0](https://github.com/borsch/mongomery/releases/tag/mongomery-0.2.0) - 12/01/2020 - assert `com.mongodb.client.MongoDatabase` instead of `com.mongodb.DB` (deprecated API)
 - [0.1.0](https://github.com/borsch/mongomery/releases/tag/mongomery-0.1.0) - 11/01/2020 - first release
