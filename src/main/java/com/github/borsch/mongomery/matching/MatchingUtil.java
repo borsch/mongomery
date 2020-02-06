@@ -4,15 +4,14 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Objects;
 import java.util.Set;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import net.minidev.json.JSONObject;
 
 class MatchingUtil {
 
-    private static final Logger log = LoggerFactory.getLogger(MatchingUtil.class);
+    private static final Logger log = java.util.logging.Logger.getLogger(MatchingUtil.class.getCanonicalName());
 
     static void removeSameElement(final Set<JSONObject> actualObjects, final Set<JSONObject> expectedObjects, final Set<String> ignorePath) {
         final Iterator<JSONObject> actualObjectsIterator = actualObjects.iterator();
@@ -38,7 +37,6 @@ class MatchingUtil {
 
     private static boolean isMatch(final JSONObject actual, final JSONObject expected, final Set<String> ignorePath, final String currentPath) {
         if (actual.equals(expected)) {
-            log.trace("Actual and expected are equals without ignoring fields.\nActual: {}\nExpected: {}", actual, expected);
             return true;
         }
 
@@ -50,9 +48,10 @@ class MatchingUtil {
         final Set<String> expectedKeys = cleanKeySet(expected.keySet(), ignorePath, currentPath);
 
         if (!actualKeys.equals(expectedKeys)) {
-            log.error(
-                "Actual keys and expected key are different.\nActual: {}\nExpected: {}\nIgnore path: {}\nUnder path: {}",
-                actualKeys, expectedKeys, ignorePath, currentPath
+            log.log(
+                Level.FINE,
+                "Actual keys and expected key are different.\nActual: {1}\nExpected: {2}\nIgnore path: {2}\nUnder path: {2}",
+                new Object[] { actualKeys, expectedKeys, ignorePath, currentPath }
             );
             return false;
         }
