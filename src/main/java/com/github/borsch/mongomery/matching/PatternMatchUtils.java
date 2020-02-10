@@ -6,9 +6,14 @@ import static com.github.borsch.mongomery.matching.Placeholders.ANY_OBJECT;
 import static com.github.borsch.mongomery.matching.Placeholders.ANY_OBJECT_WITH_ARG;
 import static com.github.borsch.mongomery.matching.Placeholders.ANY_STRING;
 import static com.github.borsch.mongomery.matching.Placeholders.ANY_STRING_WITH_ARG;
+import static com.github.borsch.mongomery.matching.Placeholders.EQ_LOCAL_DATE_TIME_VALUE;
 import static com.github.borsch.mongomery.matching.Placeholders.EQ_LONG_VALUE;
 
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Map;
@@ -33,7 +38,7 @@ class PatternMatchUtils {
 
         for (final String prop : props) {
             final String[] properties = prop.split("\\.");
-            LinkedList<JSONObject> trace = new LinkedList<>();
+            final LinkedList<JSONObject> trace = new LinkedList<>();
             trace.add(clone);
 
             for (int i = 0; i < properties.length; i++) {
@@ -53,6 +58,13 @@ class PatternMatchUtils {
                     } else if (ANY_STRING_WITH_ARG.eq($s[1]) && o instanceof String) {
                         String regex = $s[1].substring(12, $s[1].lastIndexOf('/'));
                         if (((String) o).matches(regex)) {
+                            clone = createMergedObj(trace, properties, clone.getAsString($s[0]));
+                        }
+                    } else if (EQ_LOCAL_DATE_TIME_VALUE.eq($s[1]) && isJsonObject(o) && hasOnlyProperties((JSONObject) o, DATE_KEY)) {
+                        final long expectedMillis = parseLocalDateTime($s[0], $s[1]);
+                        final long actualMillis = (Long) ((JSONObject) o).get(DATE_KEY);
+
+                        if (expectedMillis == actualMillis) {
                             clone = createMergedObj(trace, properties, clone.getAsString($s[0]));
                         }
                     } else if (isLongValue(EQ_LONG_VALUE, $s[1], o)) {
@@ -189,6 +201,16 @@ class PatternMatchUtils {
         return count;
     }
 
+    private static long parseLocalDateTime(final String property, final String placeholder) {
+        try {
+            final String localDateTimeString = placeholder.substring(23, placeholder.length() - 2);
+            final LocalDateTime localDateTime = LocalDateTime.parse(localDateTimeString);
+            return localDateTime.toInstant(ZoneOffset.UTC).toEpochMilli();
+        } catch (final DateTimeParseException ex) {
+            throw new IllegalArgumentException(String.format("Can't parse value of placeholder %s to LocalDateTime. Field %s", placeholder, property), ex);
+        }
+    }
+
     /**
      * check if object is equal to any non strict match pattern
      * @param $pattern - pattern to be checked
@@ -197,28 +219,40 @@ class PatternMatchUtils {
      */
     private static boolean isAnyNoArgPattern(final String $pattern, final Object o) {
         return (ANY_STRING.eq($pattern) && o instanceof String) ||
-            (ANY_OBJECT.eq($pattern) && o instanceof JSONObject) ||
+            (ANY_OBJECT.eq($pattern) && isJsonObject(o)) ||
             isLongValue(ANY_LONG_VALUE, $pattern, o) ||
             isDateValue($pattern, o);
     }
 
     private static boolean isLongValue(final Placeholders longValueMatcher, final String $pattern, final Object object) {
-        if (longValueMatcher.eq($pattern) && object instanceof JSONObject) {
+        if (longValueMatcher.eq($pattern) && isJsonObject(object)) {
             final JSONObject jsonObject = (JSONObject) object;
 
-            return jsonObject.size() == 1 && jsonObject.containsKey(NUMBER_LONG_KEY);
+            return hasOnlyProperties(jsonObject, NUMBER_LONG_KEY);
         }
 
         return false;
     }
 
     private static boolean isDateValue(final String $pattern, final Object object) {
-        if (ANY_DATE.eq($pattern) && object instanceof JSONObject) {
+        if (ANY_DATE.eq($pattern) && isJsonObject(object)) {
             final JSONObject jsonObject = (JSONObject) object;
 
-            return jsonObject.size() == 1 && jsonObject.containsKey(DATE_KEY);
+            return hasOnlyProperties(jsonObject, DATE_KEY);
         }
 
         return false;
+    }
+
+    private static boolean hasOnlyProperties(final JSONObject object, final String... properties) {
+        if (object.size() == properties.length) {
+            return Arrays.stream(properties)
+                .anyMatch(object::containsKey);
+        }
+        return false;
+    }
+
+    private static boolean isJsonObject(final Object o) {
+        return o instanceof JSONObject;
     }
 }

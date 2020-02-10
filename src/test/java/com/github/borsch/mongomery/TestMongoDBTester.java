@@ -184,7 +184,7 @@ class TestMongoDBTester {
     }
 
     @Test
-    void shouldMathAnyDate() {
+    void shouldMatchAnyDate() {
         final JSONObject dbState = new JSONObject();
         dbState.put("date", new Date());
         dbState.put("localDate", LocalDate.now());
@@ -195,6 +195,26 @@ class TestMongoDBTester {
         mongoDBTester.setDBState("TestCollection", dbState);
 
         mongoDBTester.assertDBStateEquals("patternMatch/anyDateMatch.json");
+    }
+
+    @Test
+    void shouldMatchStrictLocalDateTime() {
+        final JSONObject dbState = new JSONObject();
+        dbState.put("localDateTime", LocalDateTime.of(2222, 2, 2, 1, 3, 4));
+        mongoDBTester.setDBState("TestCollection", dbState);
+
+        mongoDBTester.assertDBStateEquals("localDateTime/expectedValidMatch.json");
+    }
+
+    @Test
+    void shouldThrowException_whenCannotParseLocalDateTime() {
+        final JSONObject dbState = new JSONObject();
+        dbState.put("localDateTime", LocalDateTime.of(2222, 2, 2, 1, 3, 4));
+        mongoDBTester.setDBState("TestCollection", dbState);
+
+        assertThatThrownBy(() -> mongoDBTester.assertDBStateEquals("localDateTime/unparsableLocalDateTime.json"))
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessage("Can't parse value of placeholder $eqLocalDateTimeValue(/unparsable_local_date_time/) to LocalDateTime. Field localDateTime");
     }
 
     @Test

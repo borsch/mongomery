@@ -1,0 +1,8 @@
+{
+  "TestCollection": [
+    {
+      "_id": "$anyObject()",
+      "localDateTime": "$eqLocalDateTimeValue(/2222-02-02T01:03:04/)"
+    }
+  ]
+}
