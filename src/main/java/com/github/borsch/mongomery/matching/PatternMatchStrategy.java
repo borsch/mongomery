@@ -1,12 +1,12 @@
 package com.github.borsch.mongomery.matching;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+
+import com.github.borsch.mongomery.exceptions.ComparisonError;
 
 import net.minidev.json.JSONObject;
 
@@ -15,12 +15,12 @@ public class PatternMatchStrategy {
     public static void assertTheSame(
         final String collectionName, final Set<JSONObject> expectedObjects, final Set<JSONObject> actualObjects, final Set<String> ignorePath
     ) {
-        assertThat(expectedObjects)
-            .withFailMessage(
+        if (expectedObjects.size() != actualObjects.size()) {
+            throw new ComparisonError(
                 "Collection %s has different elements size. Expected size: %s, actual size: %s.\nExpected elements: %s\nActual elements: %s",
                 collectionName, expectedObjects.size(), actualObjects.size(), expectedObjects, actualObjects
-            )
-            .hasSameSizeAs(actualObjects);
+            );
+        }
 
         final Map<JSONObject, Set<String>> patternMatchExpectedObjects = new HashMap<>();
         final Set<JSONObject> strictMatchExpectedObjects = new HashSet<>();
