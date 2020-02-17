@@ -248,7 +248,7 @@ class TestMongoDBTester {
     }
 
     @Test
-    public void shouldMatch_withIgnoreFields_PatternMatchStrategy_success() {
+    void shouldMatch_withIgnoreFields_PatternMatchStrategy_success() {
         mongoDBTester.addIgnorePaths(
             "_id",
             "intField",
@@ -260,7 +260,7 @@ class TestMongoDBTester {
     }
 
     @Test
-    public void shouldMatch_withIgnoreFields_PatternMatchStrategy_fail() {
+    void shouldMatch_withIgnoreFields_PatternMatchStrategy_fail() {
         mongoDBTester.addIgnorePaths(
             "_id",
             "intField",
@@ -271,5 +271,11 @@ class TestMongoDBTester {
         assertThatThrownBy(() -> mongoDBTester.assertDBStateEquals("patternMatch/patternMatchIgnoreFields_fail.json"))
             .isInstanceOf(AssertionError.class)
             .hasMessageStartingWith("Collection Collection doesn't match with expected.");
+    }
+
+    @Test
+    void shouldInsertLocalDateTime() {
+        mongoDBTester.setDBState("insertLocalDateTime.json");
+        mongoDBTester.assertDBStateEquals("insertLocalDateTime.json");
     }
 }
