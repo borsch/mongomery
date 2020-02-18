@@ -1,0 +1,9 @@
+{
+  "TestCollection": [
+    {
+      "_id": "$anyObject()",
+      "stringField": "some value",
+      "localDateTimeField": "$eqLocalDateTimeValue(/2020-02-02T11:11:11/)"
+    }
+  ]
+}

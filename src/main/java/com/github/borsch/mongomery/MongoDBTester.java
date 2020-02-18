@@ -123,7 +123,9 @@ public class MongoDBTester {
         final MongoCollection<Document> dbCollection = db.getCollection(collectionName, Document.class);
 
         for (final Object document : docs) {
-            dbCollection.insertOne(new Document((JSONObject) document));
+            final JSONObject jsonObject = (JSONObject) document;
+            InsertUtils.replaceInsertPlaceholders(jsonObject);
+            dbCollection.insertOne(new Document(jsonObject));
         }
     }
 
