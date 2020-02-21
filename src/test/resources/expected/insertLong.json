@@ -1,0 +1,9 @@
+{
+  "TestCollection": [
+    {
+      "_id": "$anyObject()",
+      "stringField": "some value",
+      "longField": "$eqLongValue(215345325523512)"
+    }
+  ]
+}
