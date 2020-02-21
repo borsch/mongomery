@@ -17,6 +17,10 @@ class InsertUtils {
             Pattern.compile("\\$insertLocalDateTime\\((\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2})\\)"),
             matcher -> LocalDateTime.parse(matcher.group(1))
         );
+        REPLACER_MAP.put(
+            Pattern.compile("\\$insertLong\\((-?\\d{1,19})\\)"),
+            matcher -> Long.parseLong(matcher.group(1))
+        );
     }
 
     static void replaceInsertPlaceholders(final JSONObject jsonObject) {

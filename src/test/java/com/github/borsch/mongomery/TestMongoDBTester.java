@@ -278,4 +278,11 @@ class TestMongoDBTester {
         mongoDBTester.setDBState("insertLocalDateTime.json");
         mongoDBTester.assertDBStateEquals("insertLocalDateTime.json");
     }
+
+    @Test
+    void shouldInsertLong() {
+        mongoDBTester.setDBState("insertLong.json");
+        mongoDBTester.assertDBStateEquals("insertLong.json");
+    }
+
 }

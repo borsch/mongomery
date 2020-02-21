@@ -1,0 +1,8 @@
+{
+  "TestCollection": [
+    {
+      "stringField": "some value",
+      "longField": "$insertLong(215345325523512)"
+    }
+  ]
+}
