@@ -2,7 +2,7 @@
   "TestCollection": [
     {
       "_id": "$anyObject()",
-      "localDateTime": "$eqLocalDateTimeValue(/unparsable_local_date_time/)"
+      "localDateTime": "$eqLocalDateTimeValue(unparsable_local_date_time)"
     }
   ]
 }
