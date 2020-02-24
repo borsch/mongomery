@@ -7,14 +7,14 @@ import java.util.stream.Stream;
 
 enum Placeholders {
     ANY_OBJECT("\\$anyObject\\(\\)"),
-    ANY_OBJECT_WITH_ARG("\\$anyObject\\(\\d{1,10}\\)"),
+    ANY_OBJECT_WITH_ARG("\\$anyObject\\((\\d{1,10})\\)"),
     ANY_STRING("\\$anyString\\(\\)"),
-    ANY_STRING_WITH_ARG("\\$anyString\\(\\\\?/.+\\\\?/\\)"),
+    ANY_STRING_WITH_ARG("\\$anyString\\((.+)\\)"),
     ANY_LONG_VALUE("\\$anyLongValue\\(\\)"),
     ANY_DATE("\\$anyDate\\(\\)"),
 
-    EQ_LONG_VALUE("\\$eqLongValue\\(\\d{1,20}\\)"),
-    EQ_LOCAL_DATE_TIME_VALUE("\\$eqLocalDateTimeValue\\(\\\\?/.+\\\\?/\\)");
+    EQ_LONG_VALUE("\\$eqLongValue\\((\\d{1,19})\\)"),
+    EQ_LOCAL_DATE_TIME_VALUE("\\$eqLocalDateTimeValue\\((.+)\\)");
 
     private final Pattern containPattern;
     private final Pattern equalPattern;
@@ -38,5 +38,9 @@ enum Placeholders {
         return Stream.of(values())
             .map(item -> item.equalPattern)
             .collect(Collectors.toSet());
+    }
+
+    public Pattern getEqualPattern() {
+        return equalPattern;
     }
 }

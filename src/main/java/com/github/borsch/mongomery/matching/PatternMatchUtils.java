@@ -51,28 +51,40 @@ class PatternMatchUtils {
                     } else if (isAnyNoArgPattern($s[1], o)) {
                         clone = createMergedObj(trace, properties, clone.getAsString($s[0]));
                     } else if (ANY_OBJECT_WITH_ARG.eq($s[1]) && o instanceof JSONObject) {
-                        int numOfObjs = Integer.parseInt($s[1].substring(11, $s[1].lastIndexOf(')')));
-                        if (((JSONObject) o).size() == numOfObjs) {
-                            clone = createMergedObj(trace, properties, clone.getAsString($s[0]));
+                        final Matcher matcher = ANY_OBJECT_WITH_ARG.getEqualPattern().matcher($s[1]);
+                        if (matcher.find()) {
+                            final int numOfObjs = Integer.parseInt(matcher.group(1));
+                            if (((JSONObject) o).size() == numOfObjs) {
+                                clone = createMergedObj(trace, properties, clone.getAsString($s[0]));
+                            }
                         }
                     } else if (ANY_STRING_WITH_ARG.eq($s[1]) && o instanceof String) {
-                        String regex = $s[1].substring(12, $s[1].lastIndexOf('/'));
-                        if (((String) o).matches(regex)) {
-                            clone = createMergedObj(trace, properties, clone.getAsString($s[0]));
+                        final Matcher matcher = ANY_STRING_WITH_ARG.getEqualPattern().matcher($s[1]);
+                        if (matcher.find()) {
+                            final String regex = matcher.group(1);
+                            if (((String) o).matches(regex)) {
+                                clone = createMergedObj(trace, properties, clone.getAsString($s[0]));
+                            }
                         }
                     } else if (EQ_LOCAL_DATE_TIME_VALUE.eq($s[1]) && isJsonObject(o) && hasOnlyProperties((JSONObject) o, DATE_KEY)) {
-                        final long expectedMillis = parseLocalDateTime($s[0], $s[1]);
-                        final long actualMillis = (Long) ((JSONObject) o).get(DATE_KEY);
+                        final Matcher matcher = EQ_LOCAL_DATE_TIME_VALUE.getEqualPattern().matcher($s[1]);
+                        if (matcher.find()) {
+                            final long expectedMillis = parseLocalDateTime($s[0], matcher.group(1));
+                            final long actualMillis = (Long) ((JSONObject) o).get(DATE_KEY);
 
-                        if (expectedMillis == actualMillis) {
-                            clone = createMergedObj(trace, properties, clone.getAsString($s[0]));
+                            if (expectedMillis == actualMillis) {
+                                clone = createMergedObj(trace, properties, clone.getAsString($s[0]));
+                            }
                         }
                     } else if (isLongValue(EQ_LONG_VALUE, $s[1], o)) {
-                        final long actualLong = Long.parseLong(((JSONObject) o).get(NUMBER_LONG_KEY).toString());
-                        final long expectedLong = Long.parseLong($s[1].substring(13, $s[1].indexOf(')')));
+                        final Matcher matcher = EQ_LONG_VALUE.getEqualPattern().matcher($s[1]);
+                        if (matcher.find()) {
+                            final long actualLong = Long.parseLong(((JSONObject) o).get(NUMBER_LONG_KEY).toString());
+                            final long expectedLong = Long.parseLong(matcher.group(1));
 
-                        if (actualLong == expectedLong) {
-                            clone = createMergedObj(trace, properties, clone.getAsString($s[0]));
+                            if (actualLong == expectedLong) {
+                                clone = createMergedObj(trace, properties, clone.getAsString($s[0]));
+                            }
                         }
                     } else  {
                         return null;
@@ -201,13 +213,12 @@ class PatternMatchUtils {
         return count;
     }
 
-    private static long parseLocalDateTime(final String property, final String placeholder) {
+    private static long parseLocalDateTime(final String property, final String localDateTimeString) {
         try {
-            final String localDateTimeString = placeholder.substring(23, placeholder.length() - 2);
             final LocalDateTime localDateTime = LocalDateTime.parse(localDateTimeString);
             return localDateTime.toInstant(ZoneOffset.UTC).toEpochMilli();
         } catch (final DateTimeParseException ex) {
-            throw new IllegalArgumentException(String.format("Can't parse value of placeholder %s to LocalDateTime. Field %s", placeholder, property), ex);
+            throw new IllegalArgumentException(String.format("Can't parse value of placeholder %s to LocalDateTime. Field %s", localDateTimeString, property), ex);
         }
     }
 
