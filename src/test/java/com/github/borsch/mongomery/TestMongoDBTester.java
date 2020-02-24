@@ -214,7 +214,7 @@ class TestMongoDBTester {
 
         assertThatThrownBy(() -> mongoDBTester.assertDBStateEquals("localDateTime/unparsableLocalDateTime.json"))
             .isInstanceOf(IllegalArgumentException.class)
-            .hasMessage("Can't parse value of placeholder $eqLocalDateTimeValue(/unparsable_local_date_time/) to LocalDateTime. Field localDateTime");
+            .hasMessage("Can't parse value of placeholder unparsable_local_date_time to LocalDateTime. Field localDateTime");
     }
 
     @Test

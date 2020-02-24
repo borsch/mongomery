@@ -69,7 +69,7 @@ class PatternMatchUtils {
                     } else if (EQ_LOCAL_DATE_TIME_VALUE.eq($s[1]) && isJsonObject(o) && hasOnlyProperties((JSONObject) o, DATE_KEY)) {
                         final Matcher matcher = EQ_LOCAL_DATE_TIME_VALUE.getEqualPattern().matcher($s[1]);
                         if (matcher.find()) {
-                            final long expectedMillis = parseLocalDateTime($s[0], $s[1]);
+                            final long expectedMillis = parseLocalDateTime($s[0], matcher.group(1));
                             final long actualMillis = (Long) ((JSONObject) o).get(DATE_KEY);
 
                             if (expectedMillis == actualMillis) {
