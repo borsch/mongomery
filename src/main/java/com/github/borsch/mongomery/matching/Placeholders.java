@@ -14,7 +14,8 @@ enum Placeholders {
     ANY_DATE("\\$anyDate\\(\\)"),
 
     EQ_LONG_VALUE("\\$eqLongValue\\((\\d{1,19})\\)"),
-    EQ_LOCAL_DATE_TIME_VALUE("\\$eqLocalDateTimeValue\\((.+)\\)");
+    EQ_LOCAL_DATE_TIME_VALUE("\\$eqLocalDateTimeValue\\((.+)\\)"),
+    EQ_LOCAL_DATE_VALUE("\\$eqLocalDateValue\\((.+)\\)");
 
     private final Pattern containPattern;
     private final Pattern equalPattern;

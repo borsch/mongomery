@@ -1,5 +1,6 @@
 package com.github.borsch.mongomery;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
@@ -16,6 +17,10 @@ class InsertUtils {
         REPLACER_MAP.put(
             Pattern.compile("\\$insertLocalDateTime\\((\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2})\\)"),
             matcher -> LocalDateTime.parse(matcher.group(1))
+        );
+        REPLACER_MAP.put(
+            Pattern.compile("\\$insertLocalDate\\((\\d{4}-\\d{2}-\\d{2})\\)"),
+            matcher -> LocalDate.parse(matcher.group(1))
         );
         REPLACER_MAP.put(
             Pattern.compile("\\$insertLong\\((-?\\d{1,19})\\)"),

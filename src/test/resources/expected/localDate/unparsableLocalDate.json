@@ -1,0 +1,8 @@
+{
+  "TestCollection": [
+    {
+      "_id": "$anyObject()",
+      "localDate": "$eqLocalDateValue(unparsable_local_date)"
+    }
+  ]
+}

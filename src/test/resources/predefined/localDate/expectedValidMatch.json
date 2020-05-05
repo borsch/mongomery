@@ -1,0 +1,7 @@
+{
+  "TestCollection": [
+    {
+      "localDate": "$insertLocalDate(2222-02-02)"
+    }
+  ]
+}
