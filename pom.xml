@@ -92,6 +92,34 @@
                 </plugins>
             </build>
         </profile>
+
+        <profile>
+            <id>maven-central</id>
+            <distributionManagement>
+                <snapshotRepository>
+                    <id>central-mongomery</id>
+                    <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+                </snapshotRepository>
+                <repository>
+                    <id>central-mongomery</id>
+                    <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/
+                    </url>
+                </repository>
+            </distributionManagement>
+        </profile>
+        <profile>
+            <id>github</id>
+            <distributionManagement>
+                <repository>
+                    <id>github</id>
+                    <url>https://maven.pkg.github.com/borsch/mongomery</url>
+                </repository>
+                <snapshotRepository>
+                    <id>github</id>
+                    <url>https://maven.pkg.github.com/borsch/mongomery</url>
+                </snapshotRepository>
+            </distributionManagement>
+        </profile>
     </profiles>
 
     <properties>
@@ -148,18 +176,6 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-
-    <distributionManagement>
-        <snapshotRepository>
-            <id>central-mongomery</id>
-            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-        </snapshotRepository>
-        <repository>
-            <id>central-mongomery</id>
-            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/
-            </url>
-        </repository>
-    </distributionManagement>
 
     <build>
         <plugins>
@@ -271,7 +287,8 @@
                     <localCheckout>true</localCheckout>
                     <pushChanges>false</pushChanges>
                     <mavenExecutorId>forked-path</mavenExecutorId>
-                    <arguments>-Dgpg.passphrase=${gpg.passphrase.value}</arguments>
+                    <arguments>-Dgpg.passphrase=${gpg.passphrase.value} -Pmaven-central,github</arguments>
+                    <releaseProfiles>release-sign-artifacts</releaseProfiles>
                 </configuration>
                 <dependencies>
                     <dependency>
