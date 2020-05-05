@@ -99,8 +99,8 @@
         <java.version>1.8</java.version>
 
         <jacoco.maven.plugin.version>0.8.3</jacoco.maven.plugin.version>
-        <jacoco.code.covered.limit>0.7</jacoco.code.covered.limit>
-        <jacoco.branch.covered.limit>0.6</jacoco.branch.covered.limit>
+        <jacoco.code.covered.limit>0.8</jacoco.code.covered.limit>
+        <jacoco.branch.covered.limit>0.8</jacoco.branch.covered.limit>
 
         <maven.compiler.version>3.8.1</maven.compiler.version>
 
@@ -214,15 +214,11 @@
                         </configuration>
                     </execution>
                     <execution>
-                        <id>report-unit-tests</id>
-                        <phase>verify</phase>
+                        <id>report-unit-tests-coverage</id>
+                        <phase>test</phase>
                         <goals>
                             <goal>report</goal>
                         </goals>
-                        <configuration>
-                            <title>${project.name} Unit Tests</title>
-                            <outputDirectory>${project.reporting.outputDirectory}/jacoco-unit-tests</outputDirectory>
-                        </configuration>
                     </execution>
                 </executions>
             </plugin>
