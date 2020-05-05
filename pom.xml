@@ -287,7 +287,7 @@
                     <localCheckout>true</localCheckout>
                     <pushChanges>false</pushChanges>
                     <mavenExecutorId>forked-path</mavenExecutorId>
-                    <arguments>-Dgpg.passphrase=${gpg.passphrase.value} -Pmaven-central,github</arguments>
+                    <arguments>-Dgpg.passphrase=${gpg.passphrase.value} -Pmaven-central</arguments>
                     <releaseProfiles>release-sign-artifacts</releaseProfiles>
                 </configuration>
                 <dependencies>
