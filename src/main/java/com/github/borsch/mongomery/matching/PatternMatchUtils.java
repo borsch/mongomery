@@ -7,8 +7,10 @@ import static com.github.borsch.mongomery.matching.Placeholders.ANY_OBJECT_WITH_
 import static com.github.borsch.mongomery.matching.Placeholders.ANY_STRING;
 import static com.github.borsch.mongomery.matching.Placeholders.ANY_STRING_WITH_ARG;
 import static com.github.borsch.mongomery.matching.Placeholders.EQ_LOCAL_DATE_TIME_VALUE;
+import static com.github.borsch.mongomery.matching.Placeholders.EQ_LOCAL_DATE_VALUE;
 import static com.github.borsch.mongomery.matching.Placeholders.EQ_LONG_VALUE;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeParseException;
@@ -70,6 +72,16 @@ class PatternMatchUtils {
                         final Matcher matcher = EQ_LOCAL_DATE_TIME_VALUE.getEqualPattern().matcher($s[1]);
                         if (matcher.find()) {
                             final long expectedMillis = parseLocalDateTime($s[0], matcher.group(1));
+                            final long actualMillis = (Long) ((JSONObject) o).get(DATE_KEY);
+
+                            if (expectedMillis == actualMillis) {
+                                clone = createMergedObj(trace, properties, clone.getAsString($s[0]));
+                            }
+                        }
+                    } else if (EQ_LOCAL_DATE_VALUE.eq($s[1]) && isJsonObject(o) && hasOnlyProperties((JSONObject) o, DATE_KEY)) {
+                        final Matcher matcher = EQ_LOCAL_DATE_VALUE.getEqualPattern().matcher($s[1]);
+                        if (matcher.find()) {
+                            final long expectedMillis = parseLocalDate($s[0], matcher.group(1));
                             final long actualMillis = (Long) ((JSONObject) o).get(DATE_KEY);
 
                             if (expectedMillis == actualMillis) {
@@ -219,6 +231,15 @@ class PatternMatchUtils {
             return localDateTime.toInstant(ZoneOffset.UTC).toEpochMilli();
         } catch (final DateTimeParseException ex) {
             throw new IllegalArgumentException(String.format("Can't parse value of placeholder %s to LocalDateTime. Field %s", localDateTimeString, property), ex);
+        }
+    }
+
+    private static long parseLocalDate(final String property, final String localDateString) {
+        try {
+            final LocalDate localDate = LocalDate.parse(localDateString);
+            return localDate.atStartOfDay().toInstant(ZoneOffset.UTC).toEpochMilli();
+        } catch (final DateTimeParseException ex) {
+            throw new IllegalArgumentException(String.format("Can't parse value of placeholder %s to LocalDate. Field %s", localDateString, property), ex);
         }
     }
 

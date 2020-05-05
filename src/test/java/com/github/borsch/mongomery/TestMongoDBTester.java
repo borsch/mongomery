@@ -218,6 +218,32 @@ class TestMongoDBTester {
     }
 
     @Test
+    void shouldMatchStrictLocalDate() {
+        final JSONObject dbState = new JSONObject();
+        dbState.put("localDate", LocalDate.of(2222, 2, 2));
+        mongoDBTester.setDBState("TestCollection", dbState);
+
+        mongoDBTester.assertDBStateEquals("localDate/expectedValidMatch.json");
+    }
+
+    @Test
+    void shouldMatchStrictLocalDate_insertUtilForLocalDate() {
+        mongoDBTester.setDBState("localDate/expectedValidMatch.json");
+        mongoDBTester.assertDBStateEquals("localDate/expectedValidMatch.json");
+    }
+
+    @Test
+    void shouldThrowException_whenCannotParseLocalDate() {
+        final JSONObject dbState = new JSONObject();
+        dbState.put("localDate", LocalDateTime.of(2222, 2, 2, 1, 3, 4));
+        mongoDBTester.setDBState("TestCollection", dbState);
+
+        assertThatThrownBy(() -> mongoDBTester.assertDBStateEquals("localDate/unparsableLocalDate.json"))
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessage("Can't parse value of placeholder unparsable_local_date to LocalDate. Field localDate");
+    }
+
+    @Test
     void shouldPassStrictMatchWithIgnoreFields() {
         mongoDBTester.addIgnorePaths(
             "_id",
