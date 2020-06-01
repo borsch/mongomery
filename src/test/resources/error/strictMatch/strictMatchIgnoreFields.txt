@@ -1,0 +1,4 @@
+Collection Collection doesn't match with expected.
+Ignore field(s): [subObjectField.field1, subObjectField2.field1, subObjectField2.subObjectField2.field1, _id, intField]
+Expected don't match elements: [{"subObjectField":{"unexpectedField":1,"field2":"otherValue"},"booleanField":true,"subObjectField2":{"subObjectField2":{"field2":2}},"stringField":"Value1"}]
+Actual don't match elements: [{"subObjectField":{"field1":"value1","field2":"value2"},"booleanField":true,"subObjectField2":{"field1":"2","subObjectField2":{"field1":"value1","field2":2}},"_id":"1251215122323","stringField":"Value1","intField":1}]

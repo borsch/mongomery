@@ -1,35 +1,17 @@
 package com.github.borsch.mongomery.matching;
 
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Objects;
 import java.util.Set;
+import java.util.function.Predicate;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import net.minidev.json.JSONObject;
 
 class MatchingUtil {
 
     private static final Logger log = java.util.logging.Logger.getLogger(MatchingUtil.class.getCanonicalName());
-
-    static void removeSameElement(final Set<JSONObject> actualObjects, final Set<JSONObject> expectedObjects, final Set<String> ignorePath) {
-        final Iterator<JSONObject> actualObjectsIterator = actualObjects.iterator();
-        while (actualObjectsIterator.hasNext()) {
-            final JSONObject actual = actualObjectsIterator.next();
-            final Iterator<JSONObject> expectedObjectsIterator = expectedObjects.iterator();
-
-            while (expectedObjectsIterator.hasNext()) {
-                final JSONObject expected = expectedObjectsIterator.next();
-
-                if (isMatch(actual, expected, ignorePath)) {
-                    actualObjectsIterator.remove();
-                    expectedObjectsIterator.remove();
-                    break;
-                }
-            }
-        }
-    }
 
     static boolean isMatch(final JSONObject actual, final JSONObject expected, final Set<String> ignorePath) {
         return isMatch(actual, expected, ignorePath, "");
@@ -44,8 +26,8 @@ class MatchingUtil {
             return false;
         }
 
-        final Set<String> actualKeys = cleanKeySet(actual.keySet(), ignorePath, currentPath);
-        final Set<String> expectedKeys = cleanKeySet(expected.keySet(), ignorePath, currentPath);
+        final Set<String> actualKeys = removeIgnoredPath(actual.keySet(), ignorePath, currentPath);
+        final Set<String> expectedKeys = removeIgnoredPath(expected.keySet(), ignorePath, currentPath);
 
         if (!actualKeys.equals(expectedKeys)) {
             log.log(
@@ -80,22 +62,14 @@ class MatchingUtil {
         return KeyValue.of(s.substring(0, $), s.substring($));
     }
 
-    private static Set<String> cleanKeySet(final Set<String> keySey, final Set<String> ignorePath, final String currentPath) {
-        final Set<String> result = new HashSet<>(keySey);
-        final Iterator<String> iterator = result.iterator();
+    private static Set<String> removeIgnoredPath(final Set<String> keySey, final Set<String> ignorePath, final String currentPath) {
+        return keySey.stream()
+            .filter(keyIsNotIgnored(ignorePath, currentPath))
+            .collect(Collectors.toSet());
+    }
 
-        while (iterator.hasNext()) {
-            final String key = iterator.next();
-
-            for (final String ignorePathItem : ignorePath) {
-                if (key.matches(ignorePathItem) || (currentPath + "." + key).matches(ignorePathItem)) {
-                    iterator.remove();
-                    break;
-                }
-            }
-        }
-
-        return result;
+    private static Predicate<String> keyIsNotIgnored(final Set<String> ignorePath, final String currentPath) {
+        return key -> !ignorePath.contains(key) && !ignorePath.contains(currentPath + "." + key);
     }
 
 }

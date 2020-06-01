@@ -130,7 +130,7 @@ class PatternMatchUtils {
         int contains = countStringContainsPattern(object.toString());
 
         if (contains == 0) {
-            return null;
+            return new HashSet<>();
         } else {
             final Set<String> properties = new HashSet<>();
 

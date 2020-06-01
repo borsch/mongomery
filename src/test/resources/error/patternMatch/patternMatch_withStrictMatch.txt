@@ -1,0 +1,4 @@
+Collection TestCollection doesn't match with expected.
+Ignore field(s): []
+Expected don't match elements: [{"field2:":"value22","field1:":"unmatched","_id":2,"field3:":"value33"}]
+Actual don't match elements: [{"field2:":"value22","field1:":"value11","_id":2,"field3:":"value33"}]

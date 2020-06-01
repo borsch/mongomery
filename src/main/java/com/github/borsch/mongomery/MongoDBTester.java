@@ -3,8 +3,10 @@ package com.github.borsch.mongomery;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
@@ -13,7 +15,8 @@ import java.util.TreeSet;
 import org.bson.Document;
 
 import com.github.borsch.mongomery.exceptions.ComparisonException;
-import com.github.borsch.mongomery.matching.PatternMatchStrategy;
+import com.github.borsch.mongomery.matching.MatchingStrategy;
+import com.github.borsch.mongomery.matching.UnorderedMatchStrategy;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
@@ -39,6 +42,7 @@ public class MongoDBTester {
     private final String predefinedFilesRoot;
     private final MongoDatabase db;
     private final Set<String> ignorePath;
+    private final MatchingStrategy matchingStrategy = new UnorderedMatchStrategy();
 
     /**
      * @param db mongodb instance.
@@ -131,9 +135,9 @@ public class MongoDBTester {
 
     private void assertDocumentsInCollectionAreEquals(final DBState dbState) {
         for (final String collectionName : dbState.getCollectionNames()) {
-            final Set<JSONObject> actualDocs = getAllDocumentsFromDb(collectionName);
-            final Set<JSONObject> expectedDocs = dbState.getDocuments(collectionName);
-            PatternMatchStrategy.assertTheSame(collectionName, expectedDocs, actualDocs, ignorePath);
+            final List<JSONObject> actualDocs = getAllDocumentsFromDb(collectionName);
+            final List<JSONObject> expectedDocs = dbState.getDocuments(collectionName);
+            matchingStrategy.assertTheSame(collectionName, expectedDocs, actualDocs, ignorePath);
         }
     }
 
@@ -155,8 +159,8 @@ public class MongoDBTester {
         }
     }
 
-    private Set<JSONObject> getAllDocumentsFromDb(final String collectionName) {
-        final Set<JSONObject> documents = new HashSet<>();
+    private List<JSONObject> getAllDocumentsFromDb(final String collectionName) {
+        final List<JSONObject> documents = new ArrayList<>();
         final FindIterable<Document> cursor = db.getCollection(collectionName).find();
 
         for (final Document document : cursor) {

@@ -81,6 +81,14 @@ class TestMongoDBTester {
     }
 
     @Test
+    void shouldThrowException_whenDifferentCollectionSize() {
+        mongoDBTester.setDBState("differentCollectionSize.json");
+        assertThatThrownBy(() -> mongoDBTester.assertDBStateEquals("differentCollectionSize.json"))
+            .isInstanceOf(ComparisonException.class)
+            .hasMessage("Collection TestCollection has different elements size. Expected size: 2, actual size: 1");
+    }
+
+    @Test
     void patternMatch$anyStringShouldFailOnNull() {
         mongoDBTester.setDBState("patternMatch/simplestTest$PlaceholderCantBeNullDataSet.json");
         assertThatThrownBy(() -> mongoDBTester.assertDBStateEquals("patternMatch/simplestTest$anyStringCantBeNullDataSet.json"))
@@ -181,7 +189,7 @@ class TestMongoDBTester {
         mongoDBTester.setDBState("patternMatch/patternMatch_withStrictMatch.json");
         assertThatThrownBy(() -> mongoDBTester.assertDBStateEquals("patternMatch/patternMatch_withStrictMatch.json"))
             .isInstanceOf(ComparisonException.class)
-            .hasMessageStartingWith("Can't find pattern match for 1 element(s) in collection TestCollection.");
+            .hasMessage(Utils.readFile("/error/patternMatch/patternMatch_withStrictMatch.txt"));
     }
 
     @Test
@@ -270,7 +278,7 @@ class TestMongoDBTester {
         mongoDBTester.setDBState("strictMatch/strictMatchIgnoreFields.json");
         assertThatThrownBy(() -> mongoDBTester.assertDBStateEquals("strictMatch/strictMatchIgnoreFields_fail.json"))
             .isInstanceOf(ComparisonException.class)
-            .hasMessageStartingWith("Can't find pattern match for 1 element(s) in collection Collection.");
+            .hasMessage(Utils.readFile("/error/strictMatch/strictMatchIgnoreFields.txt"));
     }
 
     @Test
