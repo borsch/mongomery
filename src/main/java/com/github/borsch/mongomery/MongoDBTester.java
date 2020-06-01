@@ -12,7 +12,7 @@ import java.util.TreeSet;
 
 import org.bson.Document;
 
-import com.github.borsch.mongomery.exceptions.ComparisonError;
+import com.github.borsch.mongomery.exceptions.ComparisonException;
 import com.github.borsch.mongomery.matching.PatternMatchStrategy;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
@@ -148,7 +148,7 @@ public class MongoDBTester {
         }
 
         if (!dbState.getCollectionNames().equals(collectionsInDb)) {
-            throw new ComparisonError(
+            throw new ComparisonException(
                 "Names of collections in db is different from described in json file!\nExpected: %s\nActual: %s",
                 dbState.getCollectionNames(), collectionsInDb
             );

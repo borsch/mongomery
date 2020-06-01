@@ -16,6 +16,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
+import com.github.borsch.mongomery.exceptions.ComparisonException;
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoDatabase;
 
@@ -67,7 +68,7 @@ class TestMongoDBTester {
     void strictMatchSimplestTestShouldFail() {
         mongoDBTester.setDBState("strictMatch/simplestTestDataSet.json");
         assertThatThrownBy(() -> mongoDBTester.assertDBStateEquals("strictMatch/simplestTestShouldFailExpectedDataSet.json"))
-            .isInstanceOf(AssertionError.class)
+            .isInstanceOf(ComparisonException.class)
             .hasMessage(Utils.readFile("/error/strictMatch/simplestTestShouldFailExpectedDataSet.txt"));
     }
 
@@ -75,7 +76,7 @@ class TestMongoDBTester {
     void patternMatch$anyObjectShouldFailOnNull() {
         mongoDBTester.setDBState("patternMatch/simplestTest$PlaceholderCantBeNullDataSet.json");
         assertThatThrownBy(() -> mongoDBTester.assertDBStateEquals("patternMatch/simplestTest$anyObjectCantBeNullDataSet.json"))
-            .isInstanceOf(AssertionError.class)
+            .isInstanceOf(ComparisonException.class)
             .hasMessageStartingWith("Collection Account doesn't match with expected.");
     }
 
@@ -83,7 +84,7 @@ class TestMongoDBTester {
     void patternMatch$anyStringShouldFailOnNull() {
         mongoDBTester.setDBState("patternMatch/simplestTest$PlaceholderCantBeNullDataSet.json");
         assertThatThrownBy(() -> mongoDBTester.assertDBStateEquals("patternMatch/simplestTest$anyStringCantBeNullDataSet.json"))
-            .isInstanceOf(AssertionError.class)
+            .isInstanceOf(ComparisonException.class)
             .hasMessageStartingWith("Collection Account doesn't match with expected.");
     }
 
@@ -91,7 +92,7 @@ class TestMongoDBTester {
     void complexTestShouldFailIfCantFindAllStrictMatches() {
         mongoDBTester.setDBState("patternMatch/complexTestDataSet.json");
         assertThatThrownBy(() -> mongoDBTester.assertDBStateEquals("patternMatch/complexTestShouldFailIfCantFindAllStrictMatches.json"))
-            .isInstanceOf(AssertionError.class)
+            .isInstanceOf(ComparisonException.class)
             .hasMessageStartingWith("Collection Account doesn't match with expected.");
     }
 
@@ -99,7 +100,7 @@ class TestMongoDBTester {
     void complexTestShouldFailIfCantFindAllPatternMatches() {
         mongoDBTester.setDBState("patternMatch/complexTestDataSet.json");
         assertThatThrownBy(() -> mongoDBTester.assertDBStateEquals("patternMatch/complexTestShouldFailIfCantFindAllPatternMatches.json"))
-            .isInstanceOf(AssertionError.class)
+            .isInstanceOf(ComparisonException.class)
             .hasMessageStartingWith("Collection Account doesn't match with expected.");
     }
 
@@ -129,7 +130,7 @@ class TestMongoDBTester {
         jsonObject.put("fieldLongValue", 1L);
         mongoDBTester.setDBState("TestCollection", jsonObject);
         assertThatThrownBy(() -> mongoDBTester.assertDBStateEquals("patternMatch/longValueMatch$eqPattern.json"))
-            .isInstanceOf(AssertionError.class)
+            .isInstanceOf(ComparisonException.class)
             .hasMessageStartingWith("Collection TestCollection doesn't match with expected.");
     }
 
@@ -155,7 +156,7 @@ class TestMongoDBTester {
     void simplestTestShouldFail$anyObjectDataSet() {
         mongoDBTester.setDBState("patternMatch/simplestTestShouldFail$anyObjectDataSet.json");
         assertThatThrownBy(() -> mongoDBTester.assertDBStateEquals("patternMatch/simplestTestShouldFail$anyObjectDataSet.json"))
-            .isInstanceOf(AssertionError.class)
+            .isInstanceOf(ComparisonException.class)
             .hasMessageStartingWith("Collection Account doesn't match with expected.");
     }
 
@@ -163,7 +164,7 @@ class TestMongoDBTester {
     void testShouldFail$anyObjectDataSet() {
         mongoDBTester.setDBState("advancedPatternMatch/testShouldPass$anyObjectDataSet.json");
         assertThatThrownBy(() -> mongoDBTester.assertDBStateEquals("advancedPatternMatch/testShouldFail$anyObjectDataSet.json"))
-            .isInstanceOf(AssertionError.class)
+            .isInstanceOf(ComparisonException.class)
             .hasMessageStartingWith("Collection Vocabulary doesn't match with expected.");
     }
 
@@ -171,7 +172,7 @@ class TestMongoDBTester {
     void shouldFailWhenCollectionNamesAreDifferent() {
         mongoDBTester.setDBState("TestCollection", new JSONObject());
         assertThatThrownBy(() -> mongoDBTester.assertDBStateEquals("differentCollectionNames.json"))
-            .isInstanceOf(AssertionError.class)
+            .isInstanceOf(ComparisonException.class)
             .hasMessageStartingWith("Names of collections in db is different from described in json file!");
     }
 
@@ -179,7 +180,7 @@ class TestMongoDBTester {
     void shouldThrowException_whenCannotMatchStrictly() {
         mongoDBTester.setDBState("patternMatch/patternMatch_withStrictMatch.json");
         assertThatThrownBy(() -> mongoDBTester.assertDBStateEquals("patternMatch/patternMatch_withStrictMatch.json"))
-            .isInstanceOf(AssertionError.class)
+            .isInstanceOf(ComparisonException.class)
             .hasMessageStartingWith("Can't find pattern match for 1 element(s) in collection TestCollection.");
     }
 
@@ -193,7 +194,6 @@ class TestMongoDBTester {
         dbState.put("stringField", "some-string");
 
         mongoDBTester.setDBState("TestCollection", dbState);
-
         mongoDBTester.assertDBStateEquals("patternMatch/anyDateMatch.json");
     }
 
@@ -201,8 +201,8 @@ class TestMongoDBTester {
     void shouldMatchStrictLocalDateTime() {
         final JSONObject dbState = new JSONObject();
         dbState.put("localDateTime", LocalDateTime.of(2222, 2, 2, 1, 3, 4));
-        mongoDBTester.setDBState("TestCollection", dbState);
 
+        mongoDBTester.setDBState("TestCollection", dbState);
         mongoDBTester.assertDBStateEquals("localDateTime/expectedValidMatch.json");
     }
 
@@ -269,7 +269,7 @@ class TestMongoDBTester {
 
         mongoDBTester.setDBState("strictMatch/strictMatchIgnoreFields.json");
         assertThatThrownBy(() -> mongoDBTester.assertDBStateEquals("strictMatch/strictMatchIgnoreFields_fail.json"))
-            .isInstanceOf(AssertionError.class)
+            .isInstanceOf(ComparisonException.class)
             .hasMessageStartingWith("Can't find pattern match for 1 element(s) in collection Collection.");
     }
 
@@ -295,7 +295,7 @@ class TestMongoDBTester {
 
         mongoDBTester.setDBState("patternMatch/patternMatchIgnoreFields.json");
         assertThatThrownBy(() -> mongoDBTester.assertDBStateEquals("patternMatch/patternMatchIgnoreFields_fail.json"))
-            .isInstanceOf(AssertionError.class)
+            .isInstanceOf(ComparisonException.class)
             .hasMessageStartingWith("Collection Collection doesn't match with expected.");
     }
 

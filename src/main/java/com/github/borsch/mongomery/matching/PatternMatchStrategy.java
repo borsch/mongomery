@@ -6,7 +6,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-import com.github.borsch.mongomery.exceptions.ComparisonError;
+import com.github.borsch.mongomery.exceptions.ComparisonException;
 
 import net.minidev.json.JSONObject;
 
@@ -16,7 +16,7 @@ public class PatternMatchStrategy {
         final String collectionName, final Set<JSONObject> expectedObjects, final Set<JSONObject> actualObjects, final Set<String> ignorePath
     ) {
         if (expectedObjects.size() != actualObjects.size()) {
-            throw new ComparisonError(
+            throw new ComparisonException(
                 "Collection %s has different elements size. Expected size: %s, actual size: %s.\nExpected elements: %s\nActual elements: %s",
                 collectionName, expectedObjects.size(), actualObjects.size(), expectedObjects, actualObjects
             );
@@ -50,10 +50,10 @@ public class PatternMatchStrategy {
 
         if (actualObjectsCopy.size() != patternMatchExpectedObjectsSize) {
             strictMatchExpectedObjects.removeAll(actualObjects);
-            throw new AssertionError(String.format(
+            throw new ComparisonException(
                 "Can't find pattern match for %s element(s) in collection %s.\nUnmatched objects: %s",
                 strictMatchExpectedObjects.size(), collectionName, strictMatchExpectedObjects
-            ));
+            );
         }
 
         return actualObjectsCopy;
@@ -88,10 +88,10 @@ public class PatternMatchStrategy {
         }
 
         if (!unmatchedActualObjects.isEmpty() || !patternMatchExpectedObjects.isEmpty()) {
-            throw new AssertionError(String.format(
+            throw new ComparisonException(
                 "Collection %s doesn't match with expected.\nIgnore field(s): %s\nExpected don't match elements: %s\nActual don't match elements: %s",
                 collectionName, ignorePath, unmatchedActualObjects, patternMatchExpectedObjects.keySet()
-            ));
+            );
         }
     }
 }
