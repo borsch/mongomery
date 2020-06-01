@@ -14,11 +14,6 @@ public class Utils {
     private Utils() {
     }
 
-    public static String[] splitByLast$(final String s) {
-        final int $ = s.lastIndexOf("$");
-        return new String[] { s.substring(0, $), s.substring($) };
-    }
-
     public static JSONObject readJsonFile(final String filePath) {
         return JSONValue.parse(readFile(filePath), JSONObject.class);
     }

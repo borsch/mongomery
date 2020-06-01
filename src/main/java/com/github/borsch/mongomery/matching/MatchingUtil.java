@@ -75,6 +75,11 @@ class MatchingUtil {
         return true;
     }
 
+    static KeyValue splitByLast$(final String s) {
+        final int $ = s.lastIndexOf("$");
+        return KeyValue.of(s.substring(0, $), s.substring($));
+    }
+
     private static Set<String> cleanKeySet(final Set<String> keySey, final Set<String> ignorePath, final String currentPath) {
         final Set<String> result = new HashSet<>(keySey);
         final Iterator<String> iterator = result.iterator();
