@@ -7,12 +7,12 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
+import lombok.experimental.UtilityClass;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONValue;
 
+@UtilityClass
 public class Utils {
-    private Utils() {
-    }
 
     public static JSONObject readJsonFile(final String filePath) {
         return JSONValue.parse(readFile(filePath), JSONObject.class);

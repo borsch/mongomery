@@ -24,15 +24,14 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import lombok.experimental.UtilityClass;
 import net.minidev.json.JSONObject;
 
+@UtilityClass
 class PatternMatchUtils {
 
     private static final String NUMBER_LONG_KEY = "$numberLong";
     private static final String DATE_KEY = "$date";
-
-    private PatternMatchUtils() {
-    }
 
     static JSONObject applyPropsAndGetResultObj(final JSONObject object, final Set<String> props) {
         JSONObject clone = (JSONObject) object.clone();
@@ -50,13 +49,13 @@ class PatternMatchUtils {
                     if (o == null) {
                         return null;
                     } else if (isAnyNoArgPattern($s.getValue(), o)) {
-                        clone = createMergedObj(trace, properties, clone.getAsString($s.getKey()));
+                        clone = createMergedObj(trace, properties);
                     } else if (ANY_OBJECT_WITH_ARG.eq($s.getValue()) && o instanceof JSONObject) {
                         final Matcher matcher = ANY_OBJECT_WITH_ARG.getEqualPattern().matcher($s.getValue());
                         if (matcher.find()) {
                             final int numOfObjs = Integer.parseInt(matcher.group(1));
                             if (((JSONObject) o).size() == numOfObjs) {
-                                clone = createMergedObj(trace, properties, clone.getAsString($s.getKey()));
+                                clone = createMergedObj(trace, properties);
                             }
                         }
                     } else if (ANY_STRING_WITH_ARG.eq($s.getValue()) && o instanceof String) {
@@ -64,7 +63,7 @@ class PatternMatchUtils {
                         if (matcher.find()) {
                             final String regex = matcher.group(1);
                             if (((String) o).matches(regex)) {
-                                clone = createMergedObj(trace, properties, clone.getAsString($s.getKey()));
+                                clone = createMergedObj(trace, properties);
                             }
                         }
                     } else if (EQ_LOCAL_DATE_TIME_VALUE.eq($s.getValue()) && isJsonObject(o) && hasOnlyProperties((JSONObject) o, DATE_KEY)) {
@@ -74,7 +73,7 @@ class PatternMatchUtils {
                             final long actualMillis = (Long) ((JSONObject) o).get(DATE_KEY);
 
                             if (expectedMillis == actualMillis) {
-                                clone = createMergedObj(trace, properties, clone.getAsString($s.getKey()));
+                                clone = createMergedObj(trace, properties);
                             }
                         }
                     } else if (EQ_LOCAL_DATE_VALUE.eq($s.getValue()) && isJsonObject(o) && hasOnlyProperties((JSONObject) o, DATE_KEY)) {
@@ -84,7 +83,7 @@ class PatternMatchUtils {
                             final long actualMillis = (Long) ((JSONObject) o).get(DATE_KEY);
 
                             if (expectedMillis == actualMillis) {
-                                clone = createMergedObj(trace, properties, clone.getAsString($s.getValue()));
+                                clone = createMergedObj(trace, properties);
                             }
                         }
                     } else if (isLongValue(EQ_LONG_VALUE, $s.getValue(), o)) {
@@ -94,7 +93,7 @@ class PatternMatchUtils {
                             final long expectedLong = Long.parseLong(matcher.group(1));
 
                             if (actualLong == expectedLong) {
-                                clone = createMergedObj(trace, properties, clone.getAsString($s.getKey()));
+                                clone = createMergedObj(trace, properties);
                             }
                         }
                     } else  {
@@ -111,7 +110,7 @@ class PatternMatchUtils {
         return clone;
     }
 
-    private static JSONObject createMergedObj(final LinkedList<JSONObject> trace, final String[] properties, final Object old) {
+    private static JSONObject createMergedObj(final LinkedList<JSONObject> trace, final String[] properties) {
         final KeyValue $s = splitByLast$(properties[properties.length - 1]);
         final JSONObject object = trace.removeLast();
         object.put($s.getKey(), $s.getValue());
