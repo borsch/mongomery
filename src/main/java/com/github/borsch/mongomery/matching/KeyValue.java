@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor(staticName = "of")
 @Getter
-public class KeyValue {
+class KeyValue {
 
     private final String key;
     private final String value;
