@@ -2,14 +2,12 @@ package com.github.borsch.mongomery;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Date;
 
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -17,37 +15,23 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
 import com.github.borsch.mongomery.exceptions.ComparisonException;
-import com.mongodb.MongoClient;
-import com.mongodb.client.MongoDatabase;
+import com.github.borsch.mongomery.type.MatchingStrategyType;
 
-import de.flapdoodle.embed.mongo.distribution.Version;
-import de.flapdoodle.embed.mongo.tests.MongodForTestsFactory;
 import net.minidev.json.JSONObject;
 
-class TestMongoDBTester {
+class UnorderedMatchingStrategyTest extends AbstractMongoTest {
 
     private static MongoDBTester mongoDBTester;
-    private static MongodForTestsFactory factory = null;
 
     @BeforeAll
-    static void init() throws IOException {
-        factory = MongodForTestsFactory.with(Version.Main.V3_3);
-
-        final MongoClient mongo = factory.newMongo();
-        final MongoDatabase db = mongo.getDatabase("test");
-        mongoDBTester = new MongoDBTester(db, "/expected/", "/predefined/");
+    static void init() {
+        mongoDBTester = new MongoDBTester(database, MatchingStrategyType.UNORDERED, "/expected/", "/predefined/");
     }
 
     @BeforeEach
     void beforeMethod() {
         mongoDBTester.cleanIgnorePath();
         mongoDBTester.dropDataBase();
-    }
-
-    @AfterAll
-    static void shutdown() {
-        if (factory != null)
-            factory.shutdown();
     }
 
     @ParameterizedTest

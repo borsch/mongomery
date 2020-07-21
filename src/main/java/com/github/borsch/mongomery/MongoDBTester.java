@@ -16,7 +16,9 @@ import org.bson.Document;
 
 import com.github.borsch.mongomery.exceptions.ComparisonException;
 import com.github.borsch.mongomery.matching.MatchingStrategy;
+import com.github.borsch.mongomery.matching.OrderedMatchStrategy;
 import com.github.borsch.mongomery.matching.UnorderedMatchStrategy;
+import com.github.borsch.mongomery.type.MatchingStrategyType;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
@@ -31,7 +33,7 @@ import net.minidev.json.JSONValue;
  */
 public class MongoDBTester {
 
-    private Set<String> SYSTEM_COLLECTIONS_NAMES = new HashSet<String>() {{
+    private static final Set<String> SYSTEM_COLLECTIONS_NAMES = new HashSet<String>() {{
         add("system.namespaces");
         add("system.indexes");
         add("system.profile");
@@ -42,25 +44,30 @@ public class MongoDBTester {
     private final String predefinedFilesRoot;
     private final MongoDatabase db;
     private final Set<String> ignorePath;
-    private final MatchingStrategy matchingStrategy = new UnorderedMatchStrategy();
+    private final MatchingStrategy matchingStrategy;
 
     /**
      * @param db mongodb instance.
      */
-    public MongoDBTester(final MongoDatabase db) {
-        this(db, "/", "/");
+    public MongoDBTester(final MongoDatabase db, final MatchingStrategyType strategyType) {
+        this(db, strategyType, "", "");
     }
 
     /**
      * @param db                  mongodb instance.
+     * @param strategyType        strategy to match objects in collections
      * @param expectedFilesRoot   expected files root. File path passed to setDBState() will be relative to this root.
      * @param predefinedFilesRoot predefined files root.
      */
-    public MongoDBTester(final MongoDatabase db, final String expectedFilesRoot, final String predefinedFilesRoot) {
+    public MongoDBTester(final MongoDatabase db, final MatchingStrategyType strategyType, final String expectedFilesRoot, final String predefinedFilesRoot) {
         this.expectedFilesRoot = expectedFilesRoot;
         this.predefinedFilesRoot = predefinedFilesRoot;
         this.db = db;
         this.ignorePath = new HashSet<>();
+
+        this.matchingStrategy = strategyType == MatchingStrategyType.ORDERED
+            ? new OrderedMatchStrategy()
+            : new UnorderedMatchStrategy();
     }
 
     public void addIgnorePaths(final String... ignorePath) {
