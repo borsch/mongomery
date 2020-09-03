@@ -1,5 +1,6 @@
 ---
 layout: default
+title: Mongomery
 ---
 
 ## Table of Contents
