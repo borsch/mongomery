@@ -9,6 +9,7 @@ title: Mongomery
 - [Install](#install)
 - [Example of JSON](#example-of-json-file-that-can-be-used-to-insertassert-collections)
 - [Placeholders](#placeholders)
+- [Spring](#placeholders)
 
 ## About
 
@@ -16,7 +17,7 @@ Mongomery - is a simple library that will help to insert data into MongoDB and a
 
 ## Install
 
-Mongomery is deployed to Maven Central os setup is pretty simple.
+Mongomery is deployed to Maven Central so setup is pretty simple.
 
 For Maven projects add
 
@@ -95,3 +96,7 @@ MongoDB doen't allow you to use fields with `$` in name. Sometimes it's necessar
 That's why Mongomery add something called placeholders that can be used to insert/assert data in JSON files
 
 There is two types of Placeholders: insert & assert placeholders. More info about placeholders you can find [here](placeholders.md)
+
+## Mongomery Spring wrapper
+
+Mongomery also has it's own Spring wrapper that can be used in Spring & Spring Boot tests. Documentation can be found [here](spring.md)
