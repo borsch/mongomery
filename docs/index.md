@@ -2,6 +2,27 @@
 layout: default
 ---
 
+## Table of Contents
+
+- [About](#about)
+- [Install](#install)
+- [Example of JSON](#example-of-json-file-that-can-be-used-to-insertassert-collections)
+- [Placeholders](#placeholders)
+  - [Insert placeholders](#insert-placeholders)
+    - [`$insertLocalDateTime()`](#insertlocaldatetimeyyyy-mm-ddthhmmss-to-insert-javatimelocaldatetime)
+    - [`$insertLocalDate()`](#insertlocaldateyyyy-mm-dd-to-insert-javatimelocaldate)
+    - [`$insertLong()`](#insertlong1242-to-insert-long)
+  - [Assert placeholders](#assert-placeholders)
+    - [`$anyObject()`](#anyobject---asserts-that-field-is-of-type-object-with-any-number-of-fields)
+    - [`$anyObject() with number of fields`](#anyobject23---assert-that-field-is-of-object-type-and-has-specific-amount-of-direct-inner-fields)
+    - [`$anyString()`](#anystring-assert-that-field-is-of-string-type-with-any-content)
+    - [`$anyString(/regex/)` assert string with regex](#anystringregex-assert-that-field-is-of-string-type-and-its-content-match-specific-pattern)
+    - [`$anyLongValue()`](#anylongvalue-assert-that-field-if-of-long-type-with-any-value)
+    - [`$anyDate()`](#anydate-assert-that-field-if-of-date-time-type-with-any-value)
+    - [`$eqLongValue()`](#eqlongvalue123-assert-that-field-of-long-type-and-it-has-specific-value)
+    - [`$eqLocalDateTimeValue()`](#eqlocaldatetimevalueyyyy-mm-ddthhmmss-assert-that-date-time-field-has-specific-value)
+    - [`$eqLocalDateValue()`](#eqlocaldatevalueyyyy-mm-dd-assert-that-date-field-has-specific-value)
+
 ## About
 
 Mongomery - is a simple library that will help to insert data into MongoDB and assert MongoDB state after test
