@@ -9,7 +9,7 @@ title: Mongomery
 - [Install](#install)
 - [Example of JSON](#example-of-json-file-that-can-be-used-to-insertassert-collections)
 - [Placeholders](#placeholders)
-- [Spring](#placeholders)
+- [Spring](#mongomery-spring-wrapper)
 
 ## About
 
