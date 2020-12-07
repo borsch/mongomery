@@ -1,0 +1,12 @@
+{
+  "TestCollection": [
+    {
+      "_id": "$anyObject()",
+      "firstName": "firstName1"
+    },
+    {
+      "_id": "$anyObject()",
+      "firstName": "firstName2"
+    }
+  ]
+}

@@ -1,0 +1,8 @@
+{
+  "TestCollection": [
+    {
+      "_id": "$anyObject()",
+      "firstName": "firstName1"
+    }
+  ]
+}

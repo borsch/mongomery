@@ -25,23 +25,23 @@ enum Placeholders {
         this.equalPattern = Pattern.compile("^" + pattern + "$");
     }
 
-    public boolean eq(final String s) {
+    boolean eq(final String s) {
         return this.equalPattern.matcher(s).matches();
     }
 
-    public static Set<Pattern> getContainPatterns() {
+    static Set<Pattern> getContainPatterns() {
         return Stream.of(values())
             .map(item -> item.containPattern)
             .collect(Collectors.toSet());
     }
 
-    public static Set<Pattern> getEqualPatterns() {
+    static Set<Pattern> getEqualPatterns() {
         return Stream.of(values())
             .map(item -> item.equalPattern)
             .collect(Collectors.toSet());
     }
 
-    public Pattern getEqualPattern() {
+    Pattern getEqualPattern() {
         return equalPattern;
     }
 }

@@ -3,8 +3,10 @@ package com.github.borsch.mongomery;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
@@ -12,8 +14,11 @@ import java.util.TreeSet;
 
 import org.bson.Document;
 
-import com.github.borsch.mongomery.exceptions.ComparisonError;
-import com.github.borsch.mongomery.matching.PatternMatchStrategy;
+import com.github.borsch.mongomery.exceptions.ComparisonException;
+import com.github.borsch.mongomery.matching.MatchingStrategy;
+import com.github.borsch.mongomery.matching.OrderedMatchStrategy;
+import com.github.borsch.mongomery.matching.UnorderedMatchStrategy;
+import com.github.borsch.mongomery.type.MatchingStrategyType;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
@@ -28,7 +33,7 @@ import net.minidev.json.JSONValue;
  */
 public class MongoDBTester {
 
-    private Set<String> SYSTEM_COLLECTIONS_NAMES = new HashSet<String>() {{
+    private static final Set<String> SYSTEM_COLLECTIONS_NAMES = new HashSet<String>() {{
         add("system.namespaces");
         add("system.indexes");
         add("system.profile");
@@ -39,24 +44,30 @@ public class MongoDBTester {
     private final String predefinedFilesRoot;
     private final MongoDatabase db;
     private final Set<String> ignorePath;
+    private final MatchingStrategy matchingStrategy;
 
     /**
      * @param db mongodb instance.
      */
-    public MongoDBTester(final MongoDatabase db) {
-        this(db, "/", "/");
+    public MongoDBTester(final MongoDatabase db, final MatchingStrategyType strategyType) {
+        this(db, strategyType, "", "");
     }
 
     /**
      * @param db                  mongodb instance.
+     * @param strategyType        strategy to match objects in collections
      * @param expectedFilesRoot   expected files root. File path passed to setDBState() will be relative to this root.
      * @param predefinedFilesRoot predefined files root.
      */
-    public MongoDBTester(final MongoDatabase db, final String expectedFilesRoot, final String predefinedFilesRoot) {
+    public MongoDBTester(final MongoDatabase db, final MatchingStrategyType strategyType, final String expectedFilesRoot, final String predefinedFilesRoot) {
         this.expectedFilesRoot = expectedFilesRoot;
         this.predefinedFilesRoot = predefinedFilesRoot;
         this.db = db;
         this.ignorePath = new HashSet<>();
+
+        this.matchingStrategy = strategyType == MatchingStrategyType.ORDERED
+            ? new OrderedMatchStrategy()
+            : new UnorderedMatchStrategy();
     }
 
     public void addIgnorePaths(final String... ignorePath) {
@@ -131,9 +142,9 @@ public class MongoDBTester {
 
     private void assertDocumentsInCollectionAreEquals(final DBState dbState) {
         for (final String collectionName : dbState.getCollectionNames()) {
-            final Set<JSONObject> actualDocs = getAllDocumentsFromDb(collectionName);
-            final Set<JSONObject> expectedDocs = dbState.getDocuments(collectionName);
-            PatternMatchStrategy.assertTheSame(collectionName, expectedDocs, actualDocs, ignorePath);
+            final List<JSONObject> actualDocs = getAllDocumentsFromDb(collectionName);
+            final List<JSONObject> expectedDocs = dbState.getDocuments(collectionName);
+            matchingStrategy.assertTheSame(collectionName, expectedDocs, actualDocs, ignorePath);
         }
     }
 
@@ -148,15 +159,15 @@ public class MongoDBTester {
         }
 
         if (!dbState.getCollectionNames().equals(collectionsInDb)) {
-            throw new ComparisonError(
+            throw new ComparisonException(
                 "Names of collections in db is different from described in json file!\nExpected: %s\nActual: %s",
                 dbState.getCollectionNames(), collectionsInDb
             );
         }
     }
 
-    private Set<JSONObject> getAllDocumentsFromDb(final String collectionName) {
-        final Set<JSONObject> documents = new HashSet<>();
+    private List<JSONObject> getAllDocumentsFromDb(final String collectionName) {
+        final List<JSONObject> documents = new ArrayList<>();
         final FindIterable<Document> cursor = db.getCollection(collectionName).find();
 
         for (final Document document : cursor) {

@@ -1,5 +1,6 @@
 package com.github.borsch.mongomery.matching;
 
+import static com.github.borsch.mongomery.matching.MatchingUtil.splitByLast$;
 import static com.github.borsch.mongomery.matching.Placeholders.ANY_DATE;
 import static com.github.borsch.mongomery.matching.Placeholders.ANY_LONG_VALUE;
 import static com.github.borsch.mongomery.matching.Placeholders.ANY_OBJECT;
@@ -23,17 +24,14 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.github.borsch.mongomery.Utils;
-
+import lombok.experimental.UtilityClass;
 import net.minidev.json.JSONObject;
 
+@UtilityClass
 class PatternMatchUtils {
 
     private static final String NUMBER_LONG_KEY = "$numberLong";
     private static final String DATE_KEY = "$date";
-
-    private PatternMatchUtils() {
-    }
 
     static JSONObject applyPropsAndGetResultObj(final JSONObject object, final Set<String> props) {
         JSONObject clone = (JSONObject) object.clone();
@@ -45,57 +43,57 @@ class PatternMatchUtils {
 
             for (int i = 0; i < properties.length; i++) {
                 if (i == properties.length - 1) {
-                    final String[] $s = Utils.splitByLast$(properties[i]);
-                    final Object o = clone.get($s[0]);
+                    final KeyValue $s = splitByLast$(properties[i]);
+                    final Object o = clone.get($s.getKey());
 
                     if (o == null) {
                         return null;
-                    } else if (isAnyNoArgPattern($s[1], o)) {
-                        clone = createMergedObj(trace, properties, clone.getAsString($s[0]));
-                    } else if (ANY_OBJECT_WITH_ARG.eq($s[1]) && o instanceof JSONObject) {
-                        final Matcher matcher = ANY_OBJECT_WITH_ARG.getEqualPattern().matcher($s[1]);
+                    } else if (isAnyNoArgPattern($s.getValue(), o)) {
+                        clone = createMergedObj(trace, properties);
+                    } else if (ANY_OBJECT_WITH_ARG.eq($s.getValue()) && o instanceof JSONObject) {
+                        final Matcher matcher = ANY_OBJECT_WITH_ARG.getEqualPattern().matcher($s.getValue());
                         if (matcher.find()) {
                             final int numOfObjs = Integer.parseInt(matcher.group(1));
                             if (((JSONObject) o).size() == numOfObjs) {
-                                clone = createMergedObj(trace, properties, clone.getAsString($s[0]));
+                                clone = createMergedObj(trace, properties);
                             }
                         }
-                    } else if (ANY_STRING_WITH_ARG.eq($s[1]) && o instanceof String) {
-                        final Matcher matcher = ANY_STRING_WITH_ARG.getEqualPattern().matcher($s[1]);
+                    } else if (ANY_STRING_WITH_ARG.eq($s.getValue()) && o instanceof String) {
+                        final Matcher matcher = ANY_STRING_WITH_ARG.getEqualPattern().matcher($s.getValue());
                         if (matcher.find()) {
                             final String regex = matcher.group(1);
                             if (((String) o).matches(regex)) {
-                                clone = createMergedObj(trace, properties, clone.getAsString($s[0]));
+                                clone = createMergedObj(trace, properties);
                             }
                         }
-                    } else if (EQ_LOCAL_DATE_TIME_VALUE.eq($s[1]) && isJsonObject(o) && hasOnlyProperties((JSONObject) o, DATE_KEY)) {
-                        final Matcher matcher = EQ_LOCAL_DATE_TIME_VALUE.getEqualPattern().matcher($s[1]);
+                    } else if (EQ_LOCAL_DATE_TIME_VALUE.eq($s.getValue()) && isJsonObject(o) && hasOnlyProperties((JSONObject) o, DATE_KEY)) {
+                        final Matcher matcher = EQ_LOCAL_DATE_TIME_VALUE.getEqualPattern().matcher($s.getValue());
                         if (matcher.find()) {
-                            final long expectedMillis = parseLocalDateTime($s[0], matcher.group(1));
+                            final long expectedMillis = parseLocalDateTime($s.getKey(), matcher.group(1));
                             final long actualMillis = (Long) ((JSONObject) o).get(DATE_KEY);
 
                             if (expectedMillis == actualMillis) {
-                                clone = createMergedObj(trace, properties, clone.getAsString($s[0]));
+                                clone = createMergedObj(trace, properties);
                             }
                         }
-                    } else if (EQ_LOCAL_DATE_VALUE.eq($s[1]) && isJsonObject(o) && hasOnlyProperties((JSONObject) o, DATE_KEY)) {
-                        final Matcher matcher = EQ_LOCAL_DATE_VALUE.getEqualPattern().matcher($s[1]);
+                    } else if (EQ_LOCAL_DATE_VALUE.eq($s.getValue()) && isJsonObject(o) && hasOnlyProperties((JSONObject) o, DATE_KEY)) {
+                        final Matcher matcher = EQ_LOCAL_DATE_VALUE.getEqualPattern().matcher($s.getValue());
                         if (matcher.find()) {
-                            final long expectedMillis = parseLocalDate($s[0], matcher.group(1));
+                            final long expectedMillis = parseLocalDate($s.getKey(), matcher.group(1));
                             final long actualMillis = (Long) ((JSONObject) o).get(DATE_KEY);
 
                             if (expectedMillis == actualMillis) {
-                                clone = createMergedObj(trace, properties, clone.getAsString($s[0]));
+                                clone = createMergedObj(trace, properties);
                             }
                         }
-                    } else if (isLongValue(EQ_LONG_VALUE, $s[1], o)) {
-                        final Matcher matcher = EQ_LONG_VALUE.getEqualPattern().matcher($s[1]);
+                    } else if (isLongValue(EQ_LONG_VALUE, $s.getValue(), o)) {
+                        final Matcher matcher = EQ_LONG_VALUE.getEqualPattern().matcher($s.getValue());
                         if (matcher.find()) {
                             final long actualLong = Long.parseLong(((JSONObject) o).get(NUMBER_LONG_KEY).toString());
                             final long expectedLong = Long.parseLong(matcher.group(1));
 
                             if (actualLong == expectedLong) {
-                                clone = createMergedObj(trace, properties, clone.getAsString($s[0]));
+                                clone = createMergedObj(trace, properties);
                             }
                         }
                     } else  {
@@ -112,10 +110,10 @@ class PatternMatchUtils {
         return clone;
     }
 
-    private static JSONObject createMergedObj(final LinkedList<JSONObject> trace, final String[] properties, final Object old) {
-        final String[] $s = Utils.splitByLast$(properties[properties.length - 1]);
+    private static JSONObject createMergedObj(final LinkedList<JSONObject> trace, final String[] properties) {
+        final KeyValue $s = splitByLast$(properties[properties.length - 1]);
         final JSONObject object = trace.removeLast();
-        object.put($s[0], $s[1]);
+        object.put($s.getKey(), $s.getValue());
 
         JSONObject temp = object;
         for (int i = properties.length - 2; i >= 0; i--) {
@@ -131,7 +129,7 @@ class PatternMatchUtils {
         int contains = countStringContainsPattern(object.toString());
 
         if (contains == 0) {
-            return null;
+            return new HashSet<>();
         } else {
             final Set<String> properties = new HashSet<>();
 
