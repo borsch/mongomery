@@ -9,8 +9,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 import org.bson.Document;
 
@@ -22,7 +22,6 @@ import com.github.borsch.mongomery.type.MatchingStrategyType;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
-import com.mongodb.client.MongoIterable;
 
 import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
@@ -149,21 +148,28 @@ public class MongoDBTester {
     }
 
     private void assertCollectionNamesAreEquals(final DBState dbState) {
-        final MongoIterable<String> collections = db.listCollectionNames();
-        final SortedSet<String> collectionsInDb = new TreeSet<>();
+        final List<String> dbCollections = getDbCollections();
+        boolean hasAbsentCollection = false;
 
-        for (final String collection : collections) {
-            if (!SYSTEM_COLLECTIONS_NAMES.contains(collection)) {
-                collectionsInDb.add(collection);
+        for (final String collection : dbState.getCollectionNames()) {
+            if (!SYSTEM_COLLECTIONS_NAMES.contains(collection) && !dbCollections.contains(collection)) {
+                hasAbsentCollection = true;
+                break;
             }
         }
 
-        if (!dbState.getCollectionNames().equals(collectionsInDb)) {
+        if (hasAbsentCollection) {
             throw new ComparisonException(
                 "Names of collections in db is different from described in json file!\nExpected: %s\nActual: %s",
-                dbState.getCollectionNames(), collectionsInDb
+                dbState.getCollectionNames(), dbCollections
             );
         }
+    }
+
+    private List<String> getDbCollections() {
+        return StreamSupport.stream(db.listCollectionNames().spliterator(), false)
+            .filter(collection -> !SYSTEM_COLLECTIONS_NAMES.contains(collection))
+            .collect(Collectors.toList());
     }
 
     private List<JSONObject> getAllDocumentsFromDb(final String collectionName) {

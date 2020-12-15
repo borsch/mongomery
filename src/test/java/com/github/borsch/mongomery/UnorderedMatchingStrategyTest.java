@@ -169,6 +169,13 @@ class UnorderedMatchingStrategyTest extends AbstractMongoTest {
     }
 
     @Test
+    void shouldCompareOnlyPassedCollections() {
+        mongoDBTester.addIgnorePaths("_id");
+        mongoDBTester.setDBState("matchOnlySameCollectionNames.json");
+        mongoDBTester.assertDBStateEquals("matchOnlySameCollectionNames.json");
+    }
+
+    @Test
     void shouldThrowException_whenCannotMatchStrictly() {
         mongoDBTester.setDBState("patternMatch/patternMatch_withStrictMatch.json");
         assertThatThrownBy(() -> mongoDBTester.assertDBStateEquals("patternMatch/patternMatch_withStrictMatch.json"))
