@@ -8,10 +8,8 @@ import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import lombok.experimental.UtilityClass;
 import net.minidev.json.JSONObject;
 
-@UtilityClass
 class InsertUtils {
 
     private static final Map<Pattern, Function<Matcher, ?>> REPLACER_MAP = new HashMap<>();

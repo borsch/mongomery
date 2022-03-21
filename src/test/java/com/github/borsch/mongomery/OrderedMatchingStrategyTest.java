@@ -17,7 +17,7 @@ class OrderedMatchingStrategyTest extends AbstractMongoTest {
 
     @BeforeAll
     static void init() {
-        mongoDBTester = new MongoDBTester(database, MatchingStrategyType.ORDERED);
+        mongoDBTester = new MongoDBTester(getDatabase(), MatchingStrategyType.ORDERED);
     }
 
     @BeforeEach

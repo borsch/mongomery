@@ -24,10 +24,8 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import lombok.experimental.UtilityClass;
 import net.minidev.json.JSONObject;
 
-@UtilityClass
 class PatternMatchUtils {
 
     private static final String NUMBER_LONG_KEY = "$numberLong";

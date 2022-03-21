@@ -1,31 +1,26 @@
 package com.github.borsch.mongomery;
 
-import java.io.IOException;
+import org.testcontainers.containers.MongoDBContainer;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
+import org.testcontainers.shaded.org.apache.commons.lang.RandomStringUtils;
+import org.testcontainers.utility.DockerImageName;
 
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-
+import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoDatabase;
 
-import de.flapdoodle.embed.mongo.distribution.Version;
-import de.flapdoodle.embed.mongo.tests.MongodForTestsFactory;
-
+@Testcontainers
 public class AbstractMongoTest {
 
-    static MongoDatabase database = null;
-    static MongodForTestsFactory factory = null;
+    @Container
+    private static final MongoDBContainer MONGO_DB_CONTAINER = new MongoDBContainer(DockerImageName.parse("mongo:3.6.23"));
 
-    @BeforeAll
-    static void initBase() throws IOException {
-        factory = MongodForTestsFactory.with(Version.Main.V3_3);
-        database = factory.newMongo().getDatabase("test");
-    }
-
-    @AfterAll
-    static void shutdown() {
-        if (factory != null) {
-            factory.shutdown();
-        }
+    protected static MongoDatabase getDatabase() {
+        String databaseName = RandomStringUtils.random(10);
+        String databaseConnection = MONGO_DB_CONTAINER.getReplicaSetUrl(databaseName);
+        MongoClient mongoClient = MongoClients.create(databaseConnection);
+        return mongoClient.getDatabase(databaseName);
     }
 
 }
