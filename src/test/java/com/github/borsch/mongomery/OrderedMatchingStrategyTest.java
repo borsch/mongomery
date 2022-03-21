@@ -46,4 +46,22 @@ class OrderedMatchingStrategyTest extends AbstractMongoTest {
             .hasMessageContaining("Expected object: {\"field1\":\"gaer64\",\"name\":\"34hserh\"}");
     }
 
+    @Test
+    void shouldAssertArraySize_fine() {
+        mongoDBTester.addIgnorePaths("name", "field1");
+        mongoDBTester.setDBState("/OrderedMatchingStrategyTest/predefined/initDbWithArray.json");
+        mongoDBTester.assertDBStateEquals("/OrderedMatchingStrategyTest/expected/arrayLengthAssert.json");
+    }
+
+    @Test
+    void shouldAssertArraySize_fail() {
+        mongoDBTester.addIgnorePaths("name", "field1");
+        mongoDBTester.setDBState("/OrderedMatchingStrategyTest/predefined/initDbWithArray.json");
+
+        assertThatThrownBy(() -> mongoDBTester.assertDBStateEquals("/OrderedMatchingStrategyTest/expected/differentArrayLength.json"))
+            .isInstanceOf(ComparisonException.class)
+            .hasMessageStartingWith("Collection [test] has different objects at index [0].")
+            .hasMessageContaining("Expected object: {\"array\":\"$arrayWithSize(5)\"}");
+    }
+
 }

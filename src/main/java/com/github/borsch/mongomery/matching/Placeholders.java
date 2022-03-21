@@ -15,7 +15,10 @@ enum Placeholders {
 
     EQ_LONG_VALUE("\\$eqLongValue\\((\\d{1,19})\\)"),
     EQ_LOCAL_DATE_TIME_VALUE("\\$eqLocalDateTimeValue\\((.+)\\)"),
-    EQ_LOCAL_DATE_VALUE("\\$eqLocalDateValue\\((.+)\\)");
+    EQ_LOCAL_DATE_VALUE("\\$eqLocalDateValue\\((.+)\\)"),
+
+    ARRAY_WITH_SIZE("\\$arrayWithSize\\((\\d{1,10})\\)"),
+    ;
 
     private final Pattern containPattern;
     private final Pattern equalPattern;
