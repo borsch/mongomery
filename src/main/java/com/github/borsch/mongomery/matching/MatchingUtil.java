@@ -43,6 +43,9 @@ class MatchingUtil {
             final Object expectedValue = expected.get(key);
             final String nextPath = currentPath.isEmpty() ? key : currentPath + "." + key;
 
+            if (actualValue == expectedValue) {
+                continue;
+            }
             if (actualValue.getClass() != expectedValue.getClass()) {
                 return false;
             } else if (actualValue instanceof JSONObject) {

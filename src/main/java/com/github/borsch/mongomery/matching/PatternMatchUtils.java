@@ -7,6 +7,7 @@ import static com.github.borsch.mongomery.matching.Placeholders.ANY_OBJECT;
 import static com.github.borsch.mongomery.matching.Placeholders.ANY_OBJECT_WITH_ARG;
 import static com.github.borsch.mongomery.matching.Placeholders.ANY_STRING;
 import static com.github.borsch.mongomery.matching.Placeholders.ANY_STRING_WITH_ARG;
+import static com.github.borsch.mongomery.matching.Placeholders.ARRAY_WITH_SIZE;
 import static com.github.borsch.mongomery.matching.Placeholders.EQ_LOCAL_DATE_TIME_VALUE;
 import static com.github.borsch.mongomery.matching.Placeholders.EQ_LOCAL_DATE_VALUE;
 import static com.github.borsch.mongomery.matching.Placeholders.EQ_LONG_VALUE;
@@ -24,6 +25,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
 
 class PatternMatchUtils {
@@ -91,6 +93,15 @@ class PatternMatchUtils {
                             final long expectedLong = Long.parseLong(matcher.group(1));
 
                             if (actualLong == expectedLong) {
+                                clone = createMergedObj(trace, properties);
+                            }
+                        }
+                    } else if (ARRAY_WITH_SIZE.eq($s.getValue()) && isJsonArray(o)) {
+                        final Matcher matcher = ARRAY_WITH_SIZE.getEqualPattern().matcher($s.getValue());
+                        if (matcher.find()) {
+                            final int expectedSize = Integer.parseInt(matcher.group(1));
+
+                            if (expectedSize == ((JSONArray) o).size()) {
                                 clone = createMergedObj(trace, properties);
                             }
                         }
@@ -282,5 +293,9 @@ class PatternMatchUtils {
 
     private static boolean isJsonObject(final Object o) {
         return o instanceof JSONObject;
+    }
+
+    private static boolean isJsonArray(final Object o) {
+        return o instanceof JSONArray;
     }
 }

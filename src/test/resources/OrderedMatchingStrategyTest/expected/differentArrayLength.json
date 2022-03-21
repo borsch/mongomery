@@ -1,0 +1,16 @@
+{
+  "test": [
+    {
+      "array": "$arrayWithSize(5)"
+    },
+    {
+      "array": "$arrayWithSize(1)"
+    },
+    {
+      "array": "$arrayWithSize(11)"
+    },
+    {
+      "array": null
+    }
+  ]
+}
