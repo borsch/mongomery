@@ -25,7 +25,7 @@ class UnorderedMatchingStrategyTest extends AbstractMongoTest {
 
     @BeforeAll
     static void init() {
-        mongoDBTester = new MongoDBTester(database, MatchingStrategyType.UNORDERED, "/expected/", "/predefined/");
+        mongoDBTester = new MongoDBTester(getDatabase(), MatchingStrategyType.UNORDERED, "/expected/", "/predefined/");
     }
 
     @BeforeEach

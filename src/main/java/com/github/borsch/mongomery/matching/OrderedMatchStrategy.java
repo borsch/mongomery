@@ -6,15 +6,17 @@ import static com.github.borsch.mongomery.matching.PatternMatchUtils.findPattern
 
 import java.util.List;
 import java.util.Set;
-import java.util.logging.Level;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.github.borsch.mongomery.exceptions.ComparisonException;
 
-import lombok.extern.java.Log;
 import net.minidev.json.JSONObject;
 
-@Log
 public class OrderedMatchStrategy implements MatchingStrategy {
+
+    private static final Logger log = LoggerFactory.getLogger(MatchingUtil.class);
 
     @Override
     public void assertTheSame(
@@ -26,10 +28,10 @@ public class OrderedMatchStrategy implements MatchingStrategy {
             final JSONObject actualObject = actualObjects.get(i);
             final JSONObject expectedObject = expectedObjects.get(i);
 
-            log.log(Level.INFO, "Compare actual object: {0}\n with expected object: {1}", new Object[] { actualObject, expectedObject });
+            log.info("Compare actual object: {}\n with expected object: {}", actualObject, expectedObject);
 
             final JSONObject object = applyPropsAndGetResultObj(actualObject, findPatternPropertiesPaths(expectedObject));
-            log.log(Level.INFO, "Actual object after applying replacing {0}", object);
+            log.info("Actual object after applying replacing {}", object);
             if (object == null || !MatchingUtil.isMatch(object, expectedObject, ignorePath)) {
                 throw new ComparisonException(
                     "Collection [%s] has different objects at index [%s].\nIgnore path: %s\nActual object: %s\nExpected object: %s",

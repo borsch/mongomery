@@ -3,16 +3,16 @@ package com.github.borsch.mongomery.matching;
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.Predicate;
-import java.util.logging.Level;
 import java.util.stream.Collectors;
 
-import lombok.experimental.UtilityClass;
-import lombok.extern.java.Log;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import net.minidev.json.JSONObject;
 
-@UtilityClass
-@Log
 class MatchingUtil {
+
+    private static final Logger log = LoggerFactory.getLogger(MatchingUtil.class);
 
     static boolean isMatch(final JSONObject actual, final JSONObject expected, final Set<String> ignorePath) {
         return isMatch(actual, expected, ignorePath, "");
@@ -31,10 +31,9 @@ class MatchingUtil {
         final Set<String> expectedKeys = removeIgnoredPath(expected.keySet(), ignorePath, currentPath);
 
         if (!actualKeys.equals(expectedKeys)) {
-            log.log(
-                Level.FINE,
-                "Actual keys and expected key are different.\nActual: {1}\nExpected: {2}\nIgnore path: {3}\nUnder path: {4}",
-                new Object[] { actualKeys, expectedKeys, ignorePath, currentPath }
+            log.info(
+                "Actual keys and expected key are different.\nActual: {}\nExpected: {}\nIgnore path: {}\nUnder path: {}",
+                actualKeys, expectedKeys, ignorePath, currentPath
             );
             return false;
         }
@@ -60,7 +59,7 @@ class MatchingUtil {
 
     static KeyValue splitByLast$(final String s) {
         final int $ = s.lastIndexOf("$");
-        return KeyValue.of(s.substring(0, $), s.substring($));
+        return new KeyValue(s.substring(0, $), s.substring($));
     }
 
     private static Set<String> removeIgnoredPath(final Set<String> keySey, final Set<String> ignorePath, final String currentPath) {
