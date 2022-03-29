@@ -8,7 +8,6 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Date;
 
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -21,15 +20,11 @@ import net.minidev.json.JSONObject;
 
 class UnorderedMatchingStrategyTest extends AbstractMongoTest {
 
-    private static MongoDBTester mongoDBTester;
-
-    @BeforeAll
-    static void init() {
-        mongoDBTester = new MongoDBTester(getDatabase(), MatchingStrategyType.UNORDERED, "/expected/", "/predefined/");
-    }
+    private MongoDBTester mongoDBTester;
 
     @BeforeEach
-    void beforeMethod() {
+    void init() {
+        mongoDBTester = new MongoDBTester(getDatabase(), MatchingStrategyType.UNORDERED, "/expected/", "/predefined/");
         mongoDBTester.cleanIgnorePath();
         mongoDBTester.dropDataBase();
     }

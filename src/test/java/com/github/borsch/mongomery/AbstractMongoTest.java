@@ -1,5 +1,7 @@
 package com.github.borsch.mongomery;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.testcontainers.containers.MongoDBContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
@@ -13,8 +15,15 @@ import com.mongodb.client.MongoDatabase;
 @Testcontainers
 public class AbstractMongoTest {
 
+    private static final Logger log = LoggerFactory.getLogger(AbstractMongoTest.class);
+    private static final String MONGO_DB_VERSION = System.getProperty("mongodb.container.version", "3.6.23");
+
+    static {
+        log.info("Start MongoDB container with DB version - {}", MONGO_DB_VERSION);
+    }
+
     @Container
-    private static final MongoDBContainer MONGO_DB_CONTAINER = new MongoDBContainer(DockerImageName.parse("mongo:3.6.23"));
+    private static final MongoDBContainer MONGO_DB_CONTAINER = new MongoDBContainer(DockerImageName.parse("mongo:" + MONGO_DB_VERSION));
 
     protected static MongoDatabase getDatabase() {
         String databaseName = RandomStringUtils.random(10);

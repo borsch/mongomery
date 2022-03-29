@@ -2,7 +2,6 @@ package com.github.borsch.mongomery;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -13,15 +12,12 @@ import com.github.borsch.mongomery.type.MatchingStrategyType;
 
 class OrderedMatchingStrategyTest extends AbstractMongoTest {
 
-    private static MongoDBTester mongoDBTester;
-
-    @BeforeAll
-    static void init() {
-        mongoDBTester = new MongoDBTester(getDatabase(), MatchingStrategyType.ORDERED);
-    }
+    private MongoDBTester mongoDBTester;
 
     @BeforeEach
     void beforeMethod() {
+        mongoDBTester = new MongoDBTester(getDatabase(), MatchingStrategyType.ORDERED);
+
         mongoDBTester.cleanIgnorePath();
         mongoDBTester.dropDataBase();
         mongoDBTester.addIgnorePaths("_id");
