@@ -9,9 +9,9 @@ jobs:
     strategy:
       matrix:
         setup:
-        - { profile: mongo-driver-3.7, docker_db_version: 3.6.23 }
-        - { profile: mongo-driver-3.12, docker_db_version: 3.6.23 }
-        - { profile: mongo-driver-3.12, docker_db_version: 4.2.19 }
+        - { profile: 'mongodb-v3,mongo-driver-3.7', docker_db_version: 3.6.23 }
+        - { profile: 'mongodb-v3,mongo-driver-3.12', docker_db_version: 3.6.23 }
+        - { profile: 'mongodb-v3,mongo-driver-3.12', docker_db_version: 4.2.19 }
 
     steps:
     - name: get source code
