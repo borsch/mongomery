@@ -6,6 +6,12 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        setup:
+        - { profile: mongo-driver-3.7, docker_db_version: 3.6.23 }
+        - { profile: mongo-driver-3.12, docker_db_version: 3.6.23 }
+        - { profile: mongo-driver-3.12, docker_db_version: 4.2.19 }
 
     steps:
     - name: get source code
@@ -22,4 +28,4 @@ jobs:
       with:
         java-version: 1.8
     - name: build with maven
-      run: mvn -B clean install
+      run: mvn -B clean install -P ${{ matrix.setup.profile }} -Dmongodb.container.version=${{ matrix.setup.docker_db_version }}
